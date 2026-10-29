@@ -21,13 +21,17 @@ En **Recursos**, puedes subir archivos admitidos o escribir un script Luau. Los 
 
 La app no ejecuta ni valida código Luau ni importa modelos automáticamente. Descarga el archivo, revisa su contenido y úsalo manualmente en Roblox Studio. Comprueba el formato, la procedencia y la licencia antes de incorporar un recurso a un juego publicado.
 
-## 6. Exportar para Codex
-En **Conexiones**, usa **Brief para Codex** para descargar un archivo Markdown con los proyectos y tareas, los criterios de aceptación y una lista de comprobaciones para Roblox Studio MCP. Ábrelo o pásalo a Codex CLI cuando trabajes en el proyecto.
+## 6. Enviar una tarea a Codex
+Primero configura el MCP con [la guía de Roblox Studio](ROBLOX-STUDIO-MCP.md). En **Conexiones**, pulsa **Comprobar Codex**. La app revisa que el CLI esté instalado y que Roblox_Studio figure en `codex mcp list`; esto todavía no demuestra que Studio tenga una sesión conectada.
 
-El brief no ejecuta las tareas. Codex debe comprobar que el servidor MCP está conectado, revisar cambios importantes y comunicar qué ha probado.
+En el chat, escribe una instrucción y pulsa **Enviar a Codex**. También puedes enviarlo desde una tarea guardada. La app pide confirmación y ejecuta `codex exec` con el sandbox `workspace-write`, aprobación `on-request` y límite de diez minutos. El proceso muestra su salida en el panel y permite cancelar. Se permite una sola ejecución a la vez.
 
-## 7. Conectar Codex y Roblox Studio
-Sigue [la guía MCP para Windows](ROBLOX-STUDIO-MCP.md). La conexión ocurre en Codex y Roblox Studio, por separado de esta app. No se muestra como activa hasta que se verifique dentro de Studio y mediante herramientas que devuelvan datos reales.
+Antes de iniciar, asegúrate de que Studio está abierto en la experiencia correcta y guarda una copia. Si el MCP no devuelve una sesión real, Codex debe informar del bloqueo. La app no marca tareas como terminadas automáticamente. Revisa el resultado dentro de Studio antes de actualizar el estado.
+
+El puente utiliza la autenticación/configuración local de Codex CLI, no la clave `AI_API_KEY` del chat. El uso sigue sujeto a la disponibilidad y los límites de tu cuenta de Codex.
+
+## 7. Exportar para Codex
+En **Conexiones**, puedes descargar el brief Markdown, JSON o exportación de tareas; son archivos de referencia y no ejecutan acciones por sí mismos.
 
 ## 8. Exportar y hacer copias de seguridad
 Los botones **Exportar Markdown** y **Exportar JSON** descargan proyectos, tareas y metadatos de recursos; no incluyen los archivos binarios. Para conservar todo, cierra la app y copia la carpeta `data/` a una ubicación segura, incluyendo `state.json`, `activity.jsonl` y `assets/`.
