@@ -18,7 +18,7 @@ No requiere dependencias de npm. Para desarrollo puedes usar `npm run dev`; para
 
 ## Funciones disponibles
 - **Chat de creación:** conversación con un modelo configurado mediante `AI_BASE_URL`, `AI_MODEL` y `AI_API_KEY`.
-- **Construir festival en Studio:** botón especializado que carga un brief y lo entrega a Codex CLI para construir en la sesión de Roblox Studio abierta. Incluye un constructor procedural de escenario y plantillas Luau para el control de iluminación y una atracción arcade. Funciona sin `AI_API_KEY`, siempre que Codex/MCP estén conectados.
+- **Construir festival en Studio:** botón especializado que carga un brief y lo entrega a Codex CLI para construir en la sesión de Roblox Studio abierta. Incluye un constructor procedural de escenario y plantillas Luau para iluminación, animación local ligera del público y una atracción arcade. Funciona sin `AI_API_KEY`, siempre que Codex/MCP estén conectados.
 - **Ejecución con Codex CLI:** envía una instrucción o tarea guardada al Codex instalado en Windows; consulta instalación y configuración MCP, enseña la salida y permite cancelar. Usa el sandbox `workspace-write` y aprobación `on-request`.
 - **Planificador:** envía una idea al modelo, solicita un plan estructurado y guarda las subtareas en la cola.
 - **Proyectos:** crea, filtra, renombra y elimina proyectos.
