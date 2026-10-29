@@ -51,7 +51,7 @@
 
 Cuando la IA en la nube esté configurada, puedes usar el Planificador para convertir una idea en tareas guardadas. Las tareas y los recursos de esta app se conservan al reiniciar.</div></div>
         </div>
-        <div class="composer"><textarea id="prompt" placeholder="Ej. Quiero un concierto norteño con escenario, luces, público y jaripeo…" rows="3"></textarea><div class="compose-bottom"><span class="hint">Enter envía al chat · Codex modifica Studio solo tras confirmación</span><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="ghost" id="sendCodexBtn" type="button">Enviar a Codex ↗</button><button class="primary" id="sendBtn">Enviar ↗</button></div></div></div>
+        <div class="composer"><textarea id="prompt" placeholder="Ej. Quiero un concierto norteño con escenario, luces, público y jaripeo…" rows="3"></textarea><div class="compose-bottom"><span class="hint">Enter envía al chat · Codex modifica Studio solo tras confirmación</span><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="ghost" id="sendCodexBtn" type="button">Enviar a Codex ↗</button><button class="primary" id="buildFestivalBtn" type="button">Construir festival en Studio</button><button class="primary" id="sendBtn">Enviar ↗</button></div></div></div>
       </section>
       <section class="card-panel" id="codexRunPanel" hidden style="margin-top:12px">
         <div class="section-head"><div><h2 id="codexRunTitle">Ejecución de Codex</h2><p id="codexRunSummary">Todavía no hay ninguna ejecución.</p></div><span class="tag" id="codexRunStatus">Sin iniciar</span></div>
@@ -178,6 +178,7 @@ function updateCodexRunView(run){
   $("#cancelCodexRunBtn").hidden=!(run.status==="running"||run.status==="cancelling");
   const active=run.status==="running"||run.status==="cancelling";
   $("#sendCodexBtn").disabled=active;
+  $("#buildFestivalBtn").disabled=active;
   $("#checkCodexBtn").disabled=active;
 }
 async function refreshCodexStatus(){
@@ -332,6 +333,26 @@ $("#newProjectBtn").addEventListener("click",createProject);
 $("#projectSelect").addEventListener("change",async()=>{localStorage.setItem("nortenoSelectedProject",$("#projectSelect").value);renderCurrentProject();try{await Promise.all([loadJobs(),loadAssets()])}catch(error){toast(error.message)}});
 $("#sendBtn").addEventListener("click",sendChat);
 $("#sendCodexBtn").addEventListener("click",()=>runWithCodex($("#prompt").value));
+$("#buildFestivalBtn").addEventListener("click",async()=>{
+  if(state.codexPolling){toast("Codex ya está trabajando; espera o cancela la ejecución actual.");return}
+  const button=$("#buildFestivalBtn");
+  button.disabled=true;
+  const original=button.textContent;
+  button.textContent="Preparando brief…";
+  try{
+    const response=await fetch("/api/build-brief",{cache:"no-store"});
+    if(!response.ok)throw new Error("No se pudo cargar la guía de construcción ("+response.status+").");
+    const brief=await response.text();
+    const project=state.projects.find(item=>item.id===selectedProjectId());
+    const projectContext=project?"\\n\\nPROYECTO SELECCIONADO\\nNombre: "+project.name+"\\nDescripción: "+(project.description||"Festival norteño para Roblox"):"";
+    const promptText="OBJETIVO PRINCIPAL: construye y verifica una primera versión jugable del Festival Norteño directamente en la experiencia abierta de Roblox Studio usando el MCP. No te limites a generar instrucciones ni a crear archivos locales.\\n\\nLee y sigue este brief de producción:\\n\\n"+brief+projectContext+"\\n\\nAntes de escribir, confirma que realmente puedes leer y modificar la sesión viva de Studio. Si no puedes, informa el bloqueo y no afirmes que hiciste cambios. Trabaja por fases, haz una pausa de seguridad antes de cualquier acción destructiva y no publiques el juego.";
+    await runWithCodex(promptText,"Construir festival norteño en Roblox");
+  }catch(error){
+    toast(error.message);
+  }finally{
+    if(!state.codexPolling){button.disabled=false;button.textContent=original}
+  }
+});
 $("#checkCodexBtn").addEventListener("click",()=>refreshCodexStatus());
 $("#cancelCodexRunBtn").addEventListener("click",cancelCodexRun);
 $("#prompt").addEventListener("keydown",event=>{if(event.key==="Enter"&&!event.shiftKey){event.preventDefault();sendChat()}});
