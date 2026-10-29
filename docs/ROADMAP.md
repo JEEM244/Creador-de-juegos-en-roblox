@@ -15,6 +15,10 @@
 - [x] Brief para Codex exportable con tareas y reglas de verificación.
 - [x] Pruebas automáticas de API y persistencia; CI para Node.js 20 y 22.
 - [ ] Pruebas automatizadas de navegador para la interfaz.
+- [x] Brief de producción especializado y botón de construcción de Festival Norteño desde la interfaz.
+- [x] Constructor procedural para escenario, iluminación visual, público, gradas, entrada, stands y zona arcade.
+- [x] Plantillas de servidor para secuencia de luces y puntuación de la atracción arcade.
+- [x] Prueba API del brief especializado sin requerir una clave de IA.
 
 ## Fase 1 — Codex y Roblox Studio
 - [x] Documentar la conexión del servidor MCP integrado de Roblox Studio con Codex CLI en Windows.
@@ -22,7 +26,9 @@
 - [x] Comprobar si Codex CLI está instalado y si Roblox_Studio está registrado en su lista MCP.
 - [x] Añadir confirmación explícita antes de lanzar una tarea de Codex desde la interfaz.
 - [ ] Validar una sesión real con Codex CLI + Roblox Studio en la computadora del usuario; el estado configurado no garantiza una sesión activa.
+- [ ] Verificar visualmente en Studio el constructor procedural y ajustar la composición con una captura real.
 - [ ] Hacer pruebas de punta a punta con cambios y Playtest en una experiencia real de Studio.
+- [ ] Verificar con varios jugadores la interacción de la atracción arcade y el control del show.
 
 ## Fase 2 — Flujos de producción
 - [x] Añadir el envío de tareas aprobadas al CLI y mostrar su salida/estado en la app.
@@ -42,6 +48,7 @@
 ## Fase 4 — Calidad y distribución
 - [ ] Añadir pruebas de navegador y pruebas de seguridad.
 - [ ] Validar scripts y probar un juego de muestra dentro de Studio.
+- [ ] Añadir análisis automático de sintaxis Luau en CI, si hay un binario Luau disponible.
 - [ ] Medir rendimiento con luces, audio, público y objetos interactivos.
 - [ ] Añadir un flujo explícito y confirmado de publicación.
 - [ ] Empaquetar la aplicación local para Windows.
