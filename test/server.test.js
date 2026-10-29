@@ -81,6 +81,17 @@ test("el puente Codex informa cuando CLI no está instalada y no ejecuta tareas"
   assert.match(result.data.error, /Codex CLI/i);
 });
 
+test("las rutas de escritura rechazan orígenes remotos", async () => {
+  const response = await fetch(baseUrl + "/api/projects", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Origin": "https://example.invalid" },
+    body: JSON.stringify({ name: "No debe crearse" })
+  });
+  const data = await response.json();
+  assert.equal(response.status, 403);
+  assert.match(data.error, /Origen no permitido/i);
+});
+
 test("GET / sirve la interfaz en español", async () => {
   const response = await fetch(baseUrl);
   const html = await response.text();
