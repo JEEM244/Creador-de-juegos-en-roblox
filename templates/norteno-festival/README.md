@@ -16,7 +16,7 @@ Este paquete es la base reproducible para el botón **Construir festival en Stud
 5. El constructor se ejecuta en contexto de edición si la herramienta de Studio lo permite. Nunca lo ejecutes en Play mode para hacer una construcción que debas guardar: los cambios de una sesión de prueba pueden revertirse al salir.
 6. Codex instala los dos scripts de servidor, ejecuta las pruebas disponibles y muestra el resultado real.
 
-El constructor marca su propia salida con el atributo `GeneratedByNortenoStudioAI`. Solo reemplaza una versión generada anteriormente que tenga esa marca; si encuentra un modelo `NortenoFestival` sin marca, conserva ese modelo y crea otro con sufijo. No publiques el lugar automáticamente.
+El constructor marca su salida con el atributo `GeneratedByNortenoStudioAI`. No reemplaza escenas automáticamente: si detecta una escena ya generada, se detiene para evitar una duplicación y Codex debe inspeccionar la escena existente y mejorarla con cuidado. Si encuentra un modelo `NortenoFestival` sin marca, lo conserva y el constructor crea otro con sufijo. No publiques el lugar automáticamente.
 
 ## Límites conocidos
 - La escena usa piezas nativas para que no dependa de IDs de activos externos. Es una base procedural estilizada, no modelos escaneados ni geometría AAA.
