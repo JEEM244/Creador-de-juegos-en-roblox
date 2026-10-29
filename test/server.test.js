@@ -67,6 +67,16 @@ test("GET /api/health informa el estado real de configuración", async () => {
   assert.equal(data.integrations.robloxStudioMcp.status, "manual");
 });
 
+test("GET /api/build-brief entrega el flujo de construcción sin exigir API key", async () => {
+  const response = await fetch(baseUrl + "/api/build-brief");
+  const brief = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") || "", /text\/markdown/i);
+  assert.match(brief, /Phase 2 — Build the main stage/);
+  assert.match(brief, /Acceptance criteria/);
+  assert.equal((await jsonRequest("/api/health")).data.ai.configured, false);
+});
+
 test("el puente Codex informa cuando CLI no está instalada y no ejecuta tareas", async () => {
   const status = await jsonRequest("/api/codex/status");
   assert.equal(status.response.status, 200);
