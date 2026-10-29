@@ -445,7 +445,7 @@ end
 -- Lead singer's microphone stands and stage cabling details.
 for x = -22, 22, 22 do
   local base = makePart(band, "MicrophoneStandBase", Vector3.new(1.1, 0.12, 1.1),
-    CFrame.new(x, 5.95, -62), palette.steel, Enum.Material.Metal, Enum.PartType.Cylinder)
+    CFrame.new(x, 5.95, -62) * CFrame.Angles(0, 0, math.rad(90)), palette.steel, Enum.Material.Metal, Enum.PartType.Cylinder)
   base.CanCollide = false
   local pole = makePart(band, "MicrophoneStandPole", Vector3.new(0.12, 2.7, 0.12),
     CFrame.new(x, 7.25, -62), palette.steel, Enum.Material.Metal)
