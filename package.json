@@ -1,8 +1,8 @@
 {
   "name": "norteno-studio-ai",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
-  "description": "Estudio local de creación Roblox con proyectos, tareas, planificación IA y biblioteca de recursos.",
+  "description": "Estudio local para Roblox con planificación, biblioteca y puente opcional a Codex CLI.",
   "type": "module",
   "scripts": {
     "start": "node server.js",
