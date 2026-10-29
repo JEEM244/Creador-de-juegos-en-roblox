@@ -1,41 +1,49 @@
 # Conectar Codex CLI con Roblox Studio MCP en Windows
 
-Roblox Studio tiene un servidor MCP integrado. La aplicación Norteño Studio AI no se conecta directamente a ese servidor todavía; Codex CLI puede ser el cliente MCP que interactúa con tu sesión de Studio.
+Roblox Studio incluye un servidor MCP. Norteño Studio AI no se conecta directamente a ese servidor: Codex CLI es el cliente que puede interactuar con la sesión abierta de Studio. Consulta también la [documentación oficial de Roblox](https://create.roblox.com/docs/studio/mcp).
 
 ## Preparación
 - Actualiza Roblox Studio.
-- Instala Codex CLI y comprueba que puedes abrirlo desde tu entorno de trabajo.
-- Abre en Studio una copia del proyecto que puedas modificar sin poner en riesgo tu versión principal.
+- Instala Codex CLI y verifica que abre correctamente.
+- Abre en Studio una copia del proyecto que puedas modificar sin poner en riesgo la versión principal.
 
-## Configuración recomendada: conexión rápida
+## Método recomendado: conexión rápida
 1. Abre Roblox Studio y carga tu experiencia.
-2. Abre **Assistant** en Studio.
-3. Pulsa el menú **…** y selecciona **Manage MCP Servers**.
-4. Activa **Enable Studio as MCP server**.
-5. Abre la opción **Quick connect** y habilita **Codex CLI**.
-6. Si Codex CLI estaba abierto durante la instalación/configuración, reinícialo.
-7. En caso de que tu versión muestre una configuración distinta, sigue el texto que proporciona la propia interfaz de Studio para ese cliente.
+2. Abre **Assistant** → menú **…** → **Manage MCP Servers**.
+3. Activa **Enable Studio as MCP server**.
+4. En **Quick connect**, habilita **Codex CLI** (en algunas versiones puede aparecer bajo el nombre ChatGPT/codex).
+5. Reinicia Codex CLI si estaba abierto durante la configuración.
 
-Si Codex CLI no aparece en Quick connect, confirma primero que está instalado y reinicia Roblox Studio. No pegues archivos de configuración de un cliente distinto sin revisar el formato que espera Codex.
+Si el cliente no aparece en la lista, confirma que Codex CLI esté instalado y reinicia Studio. Sigue las instrucciones que muestre tu versión de Studio.
 
-## Comprobación
-Pide a Codex CLI que:
-1. Detecte/lista las sesiones de Roblox Studio disponibles.
-2. Identifique la sesión correcta por nombre y, cuando corresponda, por ID de lugar.
-3. Lea la jerarquía del juego y resuma los objetos de Workspace.
-4. No modifique nada hasta que apruebes una primera operación pequeña.
+## Método alternativo desde PowerShell
+Usa esta alternativa solo si la conexión rápida no aparece. En PowerShell ejecuta:
 
-En Studio, vuelve a **Assistant → … → Manage MCP Servers** y revisa el indicador de conexión. Una instrucción de Codex por sí sola no demuestra que el MCP esté conectado: confirma que las herramientas realmente devuelvan datos del proyecto abierto.
+```powershell
+codex mcp add Roblox_Studio '--' cmd.exe /c 'cd /d %LOCALAPPDATA%\Roblox && .\mcp.bat'
+codex mcp list
+```
 
-## Qué puede hacer el MCP de Studio
-Según la versión disponible, las herramientas pueden cubrir lectura y edición de scripts, búsqueda en la jerarquía, ejecución de Luau, entrada de usuario de prueba, modo Playtest, captura de pantalla y algunas funciones de generación/búsqueda de recursos. La lista exacta puede cambiar con las actualizaciones de Studio.
+El primer comando registra el servidor MCP de Studio en Codex. Si Codex indica que ya existe `Roblox_Studio`, no lo registres por segunda vez; revisa la configuración existente y vuelve a consultar `codex mcp list`. Consulta la [guía técnica de conexión de Roblox Studio](https://github.com/Roblox/roblox-studio-agent-plugin/blob/main/skills/roblox-get-started/references/connect.md) si la sintaxis cambia.
+
+## Comprobar que funciona
+1. Confirma en Studio que **Manage MCP Servers** muestra el indicador verde de cliente conectado.
+2. En Codex, pide que liste las sesiones de Studio disponibles y que identifique la sesión por nombre/ID de lugar.
+3. Pide leer la jerarquía de Workspace y resumir algunos objetos, sin modificar nada.
+4. Después de confirmar que la lectura funciona, autoriza un cambio pequeño y reversible.
+5. Verifica el resultado dentro de Studio y revisa la salida de errores.
+
+No basta con que Codex conteste que está conectado: las herramientas deben devolver datos de la experiencia que tienes abierta.
+
+## Qué puede hacer el MCP
+Según la versión de Studio, las herramientas pueden permitir leer/editar scripts, buscar objetos, ejecutar Luau, controlar Playtest, simular entrada del jugador, capturar pantalla y acceder a funciones de generación de recursos como mallas. La lista exacta depende de la versión instalada; consulta la [documentación oficial de MCP](https://create.roblox.com/docs/studio/mcp).
 
 ## Seguridad
-- El cliente conectado puede leer y modificar el contenido de las experiencias abiertas en Studio; conecta solo clientes de confianza.
-- Guarda una copia del proyecto antes de operaciones amplias.
-- Revisa las solicitudes de aprobación; no autorices acciones que no entiendas.
-- Prueba primero cambios pequeños y verifica el resultado en Studio.
-- Nunca compartas claves API, tokens ni archivos privados en los mensajes.
+- Un cliente conectado puede leer y modificar el contenido de los lugares abiertos en Studio; conecta solo clientes de confianza.
+- Guarda una copia del proyecto antes de cambios grandes.
+- Revisa las aprobaciones y no autorices operaciones que no entiendas.
+- Prueba primero cambios pequeños.
+- No compartas claves API, tokens ni archivos privados.
 
 ## Límites actuales de Norteño Studio AI
-La app local solo mantiene un panel de estado informativo para MCP; todavía no lanza Codex CLI, no habla directamente con el servidor MCP y no puede verificar su estado por sí misma. Esta guía configura la conexión en Codex/Studio, de forma separada del chat de IA en la app.
+La app no lanza Codex CLI, no se comunica directamente con el servidor MCP y no verifica el estado de la conexión. El chat de la app, la configuración MCP y Codex CLI son componentes separados. Puedes exportar un **brief para Codex** desde **Conexiones** para pasarle al agente las tareas guardadas y los criterios de aceptación.
