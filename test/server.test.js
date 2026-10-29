@@ -353,7 +353,9 @@ test("el puente Codex lanza una ejecución aislada y captura su salida", { skip:
 case "$1" in
   --version) echo "codex-test 1.0"; exit 0 ;;
   mcp) echo "Roblox_Studio enabled"; exit 0 ;;
-  exec) echo "FAKE CODEX STARTED"; cat; exit 0 ;;
+  --ask-for-approval)
+    [ "$2" = "on-request" ] && [ "$3" = "exec" ] || exit 2
+    echo "FAKE CODEX STARTED"; cat; exit 0 ;;
   *) echo "unexpected command"; exit 2 ;;
 esac
 `, "utf8");
