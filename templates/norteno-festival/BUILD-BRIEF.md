@@ -16,10 +16,13 @@ Build a polished, playable first version of a large-scale Mexican norteño conce
 A premium nighttime regional Mexican / norteño festival. Palette: matte charcoal and black steel, warm amber and brass, deep red accents, warm white work lights, and controlled magenta/cyan LED highlights. Use dark sky and ground to make the stage lights readable. No default gray-box look: add layered materials, sign lettering, banners, cable runs, truss crossbars, speaker stacks, screen borders, edge lighting, road cases, backstage details, safety rails, floor markings, and coordinated signage. Keep the environment readable and navigable.
 
 ## Phase 1 — Establish a safe workspace
-1. Inspect the open place and current hierarchy. Do not assume the place is empty.
-2. Create or update `Workspace/NortenoFestival` only.
-3. Inside it, organize models/folders named `Grounds`, `MainStage`, `Crowd`, `Concessions`, `RodeoArena`, `Backstage`, `LightingRig`, and `Wayfinding`.
-4. Use helper functions for parts, signs, lights, and repeated props. Set anchored/collision/query properties deliberately.
+1. Read `templates/norteno-festival/BuildFestival.lua` in the Norteño Studio AI workspace, then inspect the open place and current hierarchy. Do not assume the place is empty.
+2. Prove MCP is connected to the live Studio session. If available, execute the builder source in EDIT mode (not Play mode, where changes would revert) after confirming that it only replaces a model marked `GeneratedByNortenoStudioAI`. If local-file execution is unavailable, reproduce its design using MCP editing tools rather than stopping at a plan.
+3. Keep the generated scene within a marked `Workspace/NortenoFestival` model. The builder preserves any unmarked model with that name by choosing a generated suffix.
+4. The provided builder makes the main stage, layered rigging, LED panels, speaker stacks, crowd and bleachers, entrance, concessions, backstage, and optional arena. Inspect its output and fix any overlaps or broken geometry before moving on.
+5. Read `templates/norteno-festival/LightingShow.server.luau` and `RodeoRide.server.luau`. Install them as scripts in `ServerScriptService` using Studio MCP script-creation/editing tools. Do not merely save their text into a local folder. If the installed MCP cannot create/edit scripts, explain the specific blocker and leave the files available for manual installation.
+6. The builder applies a named Atmosphere effect and sets global Lighting values for the night scene. Do not delete or modify unrelated effects; report those intentional environment changes so the user can review them.
+7. Use helper functions for any additional parts, signs, lights and props. Set anchored/collision/query properties deliberately.
 
 ## Phase 2 — Build the main stage
 Create a concert space with visual hierarchy:
@@ -44,6 +47,11 @@ Create maintainable scripts in appropriate services (use MCP script editing/crea
 - An interactive attraction prompt and simple server-validated score/time loop for the arcade ride. Keep the mechanic optional and non-graphic.
 - A lightweight client script only if needed for local UI feedback. Validate RemoteEvent inputs on the server; never trust a client to set scores or arbitrary lighting.
 - Avoid hard-coded references that break if objects are renamed; use a consistent folder/attribute scheme and nil checks.
+
+## Companion templates
+- `templates/norteno-festival/BuildFestival.lua`: one-time procedural builder intended for Studio EDIT context; it creates a marked, self-contained scene.
+- `templates/norteno-festival/LightingShow.server.luau`: server-authoritative show toggle and lighting looks.
+- `templates/norteno-festival/RodeoRide.server.luau`: optional 12-second arcade ride challenge with server-side score checks.
 
 ## Phase 5 — Quality pass
 1. Inspect the generated hierarchy and check for duplicate builds, floating objects, unanchored static geometry, blocked paths, malformed text and excessive light instances.
