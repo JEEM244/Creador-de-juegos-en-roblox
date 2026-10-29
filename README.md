@@ -47,6 +47,7 @@ La app web **no se conecta directamente al MCP ni ejecuta cambios dentro de Stud
 - `POST /api/plan`: genera un plan con IA y guarda las tareas.
 - `GET/POST /api/assets`, `GET /api/assets/:id/download`, `DELETE /api/assets/:id`: biblioteca.
 - `POST /api/chat`: chat con IA.
+- `GET /api/export/codex`: brief para Codex con tareas, criterios y pasos de verificación.
 
 Las rutas son para uso local; la aplicación escucha por defecto solo en `127.0.0.1`.
 
