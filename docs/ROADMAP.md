@@ -2,6 +2,7 @@
 
 ## Fase 0 — Base local
 - [x] Interfaz en español con navegación de chat, planificación, tareas, recursos y conexiones.
+- [x] Lanzador de un clic para Windows que prepara `.env`, inicia el servidor y abre la app.
 - [x] Servidor local sin dependencias npm.
 - [x] Proxy de chat con proveedor compatible con Chat Completions.
 - [x] Proyectos persistentes con creación, edición y eliminación.
