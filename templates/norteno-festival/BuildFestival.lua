@@ -439,6 +439,12 @@ for index, x in bandPositions do
       palette.black, Enum.Material.SmoothPlastic)
     leg.CanCollide = false
     leg.CanQuery = false
+    local arm = makePart(musician, "PerformerArm", Vector3.new(0.4, 1.55, 0.48),
+      CFrame.new(x + legSide * 0.88, 7.25, -67 + (index % 2) * 2)
+        * CFrame.Angles(0, 0, math.rad(legSide * 12)),
+      shirt, Enum.Material.SmoothPlastic)
+    arm.CanCollide = false
+    arm.CanQuery = false
   end
 end
 
