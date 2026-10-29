@@ -132,11 +132,18 @@ function publicAsset(asset) {
 function spawnCodex(args, options = {}) {
   const spawnOptions = { windowsHide: true, ...options };
   if (process.platform === "win32") {
-    const quote = value => '"' + String(value).replace(/"/g, '""') + '"';
-    const commandLine = [CODEX_EXECUTABLE, ...args].map(quote).join(" ");
-    // Pass the composed cmd.exe command line verbatim. Otherwise Node re-quotes
-    // the embedded quotes and cmd.exe receives a command like ""codex" "--version"".
-    return spawn(process.env.ComSpec || "cmd.exe", ["/d", "/s", "/c", '"' + commandLine + '"'], {
+    const quoteCmdArg = value => {
+      const text = String(value);
+      // cmd.exe needs quotes only for tokens containing whitespace or shell metacharacters.
+      // In particular, never pass the plain executable name as "\\\"codex\\\"": cmd
+      // can treat those quote characters as part of the command name.
+      if (!/[\\s"&|<>^()]/.test(text)) return text;
+      return '"' + text.replace(/"/g, '""') + '"';
+    };
+    const commandLine = [quoteCmdArg(CODEX_EXECUTABLE), ...args.map(quoteCmdArg)].join(" ");
+    // Use a raw command string: spawn()'s normal Windows quoting can add an extra
+    // quote layer that makes cmd.exe search for a command literally named "codex".
+    return spawn(process.env.ComSpec || "cmd.exe", ["/d", "/c", commandLine], {
       ...spawnOptions,
       windowsVerbatimArguments: true
     });
