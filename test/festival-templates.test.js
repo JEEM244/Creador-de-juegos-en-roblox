@@ -17,6 +17,12 @@ test("el constructor está marcado y no ejecuta una segunda copia silenciosament
   assert.match(source, /AudienceSilhouette/);
   assert.match(source, /JARIPEO ARCADE/);
   assert.match(source, /ShowControlPrompt/);
+  assert.match(source, /BandLineup/);
+  assert.match(source, /AccordionBody/);
+  assert.match(source, /BajoSextoBody/);
+  assert.match(source, /DrumKick/);
+  assert.match(source, /StallBackWall/);
+  assert.match(source, /for step = 1, 10 do/);
 });
 
 test("los controladores de servidor validan el modelo y sus controles", async () => {
