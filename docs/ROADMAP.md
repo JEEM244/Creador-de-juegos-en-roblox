@@ -18,13 +18,15 @@
 
 ## Fase 1 — Codex y Roblox Studio
 - [x] Documentar la conexión del servidor MCP integrado de Roblox Studio con Codex CLI en Windows.
-- [x] Aclarar en la interfaz que la app no verifica ni controla el MCP directamente.
-- [ ] Validar una sesión real con Codex CLI + Roblox Studio en la computadora del usuario.
-- [ ] Crear un flujo de aprobación y comprobación para cambios hechos con Codex/Studio.
-- [ ] Investigar un puente local seguro para que la app pueda mostrar un estado de conexión real, sin fingir conectividad.
+- [x] Añadir puente opcional para lanzar Codex CLI con sandbox, aprobaciones, salida visible, cancelación y límite de tiempo.
+- [x] Comprobar si Codex CLI está instalado y si Roblox_Studio está registrado en su lista MCP.
+- [x] Añadir confirmación explícita antes de lanzar una tarea de Codex desde la interfaz.
+- [ ] Validar una sesión real con Codex CLI + Roblox Studio en la computadora del usuario; el estado configurado no garantiza una sesión activa.
+- [ ] Hacer pruebas de punta a punta con cambios y Playtest en una experiencia real de Studio.
 
 ## Fase 2 — Flujos de producción
-- [ ] Ejecutar una tarea aprobada con el cliente configurado, manteniendo revisión humana.
+- [x] Añadir el envío de tareas aprobadas al CLI y mostrar su salida/estado en la app.
+- [ ] Verificar los resultados reales dentro de Studio en el equipo del usuario.
 - [ ] Añadir exportación/importación de un paquete de proyecto con metadatos.
 - [ ] Añadir búsqueda, etiquetas y vista previa de recursos en la biblioteca.
 - [x] Añadir exportación de planes y tareas a JSON/Markdown.
