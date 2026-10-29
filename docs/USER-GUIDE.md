@@ -34,7 +34,7 @@ El puente utiliza la autenticación/configuración local de Codex CLI, no la cla
 1. Abre una copia de la experiencia correcta en Roblox Studio y guarda una copia de seguridad.
 2. Confirma en Studio que el servidor MCP está habilitado y que Codex aparece conectado en esa sesión.
 3. En Norteño Studio AI, pulsa **Construir festival en Studio** y acepta el aviso. El botón carga el brief local y lo envía a Codex con las reglas del constructor.
-4. Codex debe leer `templates/norteno-festival/BuildFestival.lua`, ejecutar el constructor en contexto de edición, crear la escena y añadir `LightingShow.server.luau` y `RodeoRide.server.luau` a `ServerScriptService`.
+4. Codex debe leer `templates/norteno-festival/BuildFestival.lua`, ejecutar el constructor en contexto de edición, crear la escena, añadir `LightingShow.server.luau` y `RodeoRide.server.luau` a `ServerScriptService`, y poner `CrowdAnimation.client.luau` en `StarterPlayerScripts`.
 5. Deja que Codex inspeccione la jerarquía, corrija errores y haga Playtest si el MCP lo permite. Revisa las luces, pasillos, pantallas, puestos y controles. No publiques automáticamente.
 
 El constructor crea piezas nativas, pantallas gráficas y público estilizado; no descarga modelos externos ni incluye música real. La escena procedural es una base jugable inicial, no una producción AAA. Si el MCP no puede ejecutar el constructor o editar scripts, revisa el bloqueo concreto en la salida de Codex y la guía `templates/norteno-festival/README.md`.
