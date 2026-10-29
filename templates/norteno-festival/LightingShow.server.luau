@@ -57,11 +57,15 @@ local function setLook(look)
       descendant.Color = look.color
     end
   end
-  -- Change the LED wall graphic at the same time as the fixtures.
+  -- Preserve graphic contrast instead of flattening the entire LED wall to one color.
+  local stripeIndex = 0
   for _, descendant in root:GetDescendants() do
     if descendant:IsA("Frame") and descendant.Name == "LEDStripe" then
-      descendant.BackgroundColor3 = look.color
-      descendant.BackgroundTransparency = 0.08
+      stripeIndex += 1
+      descendant.BackgroundColor3 = if stripeIndex % 3 == 0
+        then look.color
+        else look.color:Lerp(Color3.fromRGB(12, 14, 19), 0.58)
+      descendant.BackgroundTransparency = if stripeIndex % 3 == 0 then 0.08 else 0.34
     elseif descendant:IsA("TextLabel") and descendant.Name == "Label" then
       descendant.TextColor3 = look.color
     end
