@@ -244,7 +244,7 @@ for side = -1, 1, 2 do
   local x = side * 43
   for step = 1, 10 do
     makePart(stage, "AccessStair", Vector3.new(12, 0.55, 1.75),
-      CFrame.new(x, 0.275 + step * 0.55, -28 - step * 1.7),
+      CFrame.new(x, 0.275 + (step - 1) * 0.55, -28 - step * 1.7),
       palette.steel, Enum.Material.Metal)
   end
   makePart(stage, "StageSideTower", Vector3.new(4, 15, 5), CFrame.new(side * 52, 9.5, -64),
@@ -557,9 +557,11 @@ for side = -1, 1, 2 do
     makePart(rodeo, "ArenaFencePost", Vector3.new(0.8, 5.7, 0.8),
       CFrame.new(154 - 39 + post * 13, 3.15, -25 + side * 39),
       palette.brass, Enum.Material.Wood)
-    makePart(rodeo, "ArenaFencePost", Vector3.new(0.8, 5.7, 0.8),
-      CFrame.new(154 + side * 39, 3.15, -25 - 39 + post * 13),
-      palette.brass, Enum.Material.Wood)
+    if post > 0 and post < 6 then
+      makePart(rodeo, "ArenaFencePost", Vector3.new(0.8, 5.7, 0.8),
+        CFrame.new(154 + side * 39, 3.15, -25 - 39 + post * 13),
+        palette.brass, Enum.Material.Wood)
+    end
   end
   for edge = 0, 1 do
     makePart(rodeo, "ArenaFenceRail", Vector3.new(78, 0.55, 0.55),
