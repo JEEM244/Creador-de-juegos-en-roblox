@@ -407,6 +407,112 @@ for side = -1, 1, 2 do
   end
 end
 
+-- Norteño band silhouettes and stage instruments: visual props, not animated performers.
+local band = folder("BandLineup", stage)
+local bandPositions = { -25, -13, 0, 13, 25 }
+for index, x in bandPositions do
+  local musician = Instance.new("Model")
+  musician.Name = "BandPerformer_" .. tostring(index)
+  musician.Parent = band
+  local shirt = if index % 2 == 0 then palette.red else palette.charcoal
+  local torso = makePart(musician, "PerformerTorso", Vector3.new(1.35, 2.05, 0.72),
+    CFrame.new(x, 7.0, -67 + (index % 2) * 2), shirt, Enum.Material.SmoothPlastic)
+  torso.CanCollide = false
+  torso.CanQuery = false
+  local head = makePart(musician, "PerformerHead", Vector3.new(0.9, 0.95, 0.9),
+    CFrame.new(x, 8.55, -67 + (index % 2) * 2), Color3.fromRGB(177, 134, 100),
+    Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+  head.CanCollide = false
+  head.CanQuery = false
+  local brim = makePart(musician, "SombreroBrim", Vector3.new(1.8, 0.16, 1.8),
+    CFrame.new(x, 9.1, -67 + (index % 2) * 2) * CFrame.Angles(0, 0, math.rad(90)),
+    if index % 2 == 0 then palette.black else palette.brass,
+    Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+  brim.CanCollide = false
+  local crown = makePart(musician, "SombreroCrown", Vector3.new(0.95, 0.6, 0.95),
+    CFrame.new(x, 9.45, -67 + (index % 2) * 2),
+    palette.black, Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+  crown.CanCollide = false
+  for legSide = -1, 1, 2 do
+    local leg = makePart(musician, "PerformerLeg", Vector3.new(0.42, 1.2, 0.48),
+      CFrame.new(x + legSide * 0.34, 6.0, -67 + (index % 2) * 2),
+      palette.black, Enum.Material.SmoothPlastic)
+    leg.CanCollide = false
+    leg.CanQuery = false
+  end
+end
+
+-- Lead singer's microphone stands and stage cabling details.
+for x = -22, 22, 22 do
+  local base = makePart(band, "MicrophoneStandBase", Vector3.new(1.1, 0.12, 1.1),
+    CFrame.new(x, 5.95, -62), palette.steel, Enum.Material.Metal, Enum.PartType.Cylinder)
+  base.CanCollide = false
+  local pole = makePart(band, "MicrophoneStandPole", Vector3.new(0.12, 2.7, 0.12),
+    CFrame.new(x, 7.25, -62), palette.steel, Enum.Material.Metal)
+  pole.CanCollide = false
+  local boom = makePart(band, "MicrophoneBoom", Vector3.new(0.1, 0.1, 1.0),
+    CFrame.new(x + 0.35, 8.5, -62), palette.steel, Enum.Material.Metal)
+  boom.CanCollide = false
+  local mic = addGlow(band, "Microphone", Vector3.new(0.2, 0.2, 0.45),
+    CFrame.new(x + 0.8, 8.5, -62), palette.gold, 0.2)
+  mic.CanCollide = false
+end
+
+-- Accordion with bellows/button rows at the norteño player position.
+local accordion = makePart(band, "AccordionBody", Vector3.new(2.2, 1.8, 0.7),
+  CFrame.new(-13.2, 7.4, -64.5), palette.red, Enum.Material.SmoothPlastic)
+accordion.CanCollide = false
+makePart(band, "AccordionBellow", Vector3.new(0.85, 1.55, 0.56),
+  CFrame.new(-13.2, 7.4, -64.05), palette.charcoal, Enum.Material.Rubber).CanCollide = false
+for stripe = 1, 6 do
+  makePart(band, "AccordionBellowRib", Vector3.new(0.08, 1.45, 0.08),
+    CFrame.new(-13.55 + stripe * 0.12, 7.4, -63.75), palette.gold, Enum.Material.Metal).CanCollide = false
+end
+for row = 1, 3 do
+  for column = 1, 3 do
+    makePart(band, "AccordionButton", Vector3.new(0.12, 0.12, 0.08),
+      CFrame.new(-14 + column * 0.2, 7.05 + row * 0.2, -64.08),
+      palette.cream, Enum.Material.SmoothPlastic).CanCollide = false
+  end
+end
+
+-- Bajo sexto: rounded body, neck, fretboard and tuning pegs.
+local guitar = makePart(band, "BajoSextoBody", Vector3.new(1.7, 1.65, 0.5),
+  CFrame.new(13.3, 7.0, -64.1) * CFrame.Angles(0, 0, math.rad(-18)),
+  palette.brass, Enum.Material.WoodPlanks, Enum.PartType.Ball)
+guitar.CanCollide = false
+makePart(band, "BajoSextoSoundHole", Vector3.new(0.42, 0.42, 0.09),
+  CFrame.new(13.3, 7.0, -63.8) * CFrame.Angles(0, 0, math.rad(-18)),
+  palette.black, Enum.Material.SmoothPlastic, Enum.PartType.Cylinder).CanCollide = false
+local neck = makePart(band, "BajoSextoNeck", Vector3.new(0.32, 2.4, 0.36),
+  CFrame.new(13.8, 8.15, -64.2) * CFrame.Angles(0, 0, math.rad(-18)),
+  palette.charcoal, Enum.Material.Wood).CanCollide = false
+for fret = 1, 7 do
+  makePart(band, "GuitarFret", Vector3.new(0.34, 0.055, 0.39),
+    neck.CFrame * CFrame.new(0, -1 + fret * 0.25, 0), palette.cream, Enum.Material.Metal).CanCollide = false
+end
+
+-- Compact drum kit and cymbals on the right, with no physics-heavy simulation.
+local kick = makePart(band, "DrumKick", Vector3.new(3.0, 2.5, 2.5),
+  CFrame.new(26, 7.0, -71) * CFrame.Angles(0, math.rad(90), 0),
+  palette.black, Enum.Material.Metal, Enum.PartType.Cylinder)
+kick.CanCollide = false
+makePart(band, "DrumKickRim", Vector3.new(3.1, 2.55, 0.12),
+  CFrame.new(26, 7.0, -69.7) * CFrame.Angles(0, math.rad(90), 0),
+  palette.gold, Enum.Material.Metal, Enum.PartType.Cylinder).CanCollide = false
+for index, x in { 24, 27, 29 } do
+  local tom = makePart(band, "DrumTom", Vector3.new(1.2, 0.8, 1.1),
+    CFrame.new(x, 8.35, -70), palette.red, Enum.Material.Metal, Enum.PartType.Cylinder)
+  tom.CanCollide = false
+end
+for x = 22, 29, 7 do
+  makePart(band, "CymbalStand", Vector3.new(0.1, 2.1, 0.1),
+    CFrame.new(x, 7.9, -73), palette.steel, Enum.Material.Metal).CanCollide = false
+  makePart(band, "Cymbal", Vector3.new(1.8, 0.12, 1.8),
+    CFrame.new(x, 9.0, -73) * CFrame.Angles(0, 0, math.rad(90)),
+    palette.gold, Enum.Material.Metal, Enum.PartType.Cylinder).CanCollide = false
+end
+
 -- Crowd pen, barriers and elevated seating with clear aisles.
 for side = -1, 1, 2 do
   makePart(crowd, "FrontCrowdBarrier", Vector3.new(2, 3.5, 56), CFrame.new(side * 57, 1.75, -24),
