@@ -183,7 +183,9 @@ function attachMessageActions(row,reply){
   if(name===null)return;
   try{
    const filename=name.toLowerCase().endsWith(".md")?name:name+".md";
-   await api("/api/assets",{method:"POST",body:JSON.stringify({name:name.replace(/\\.[^.]+$/,""),filename,kind:"note",description:"Respuesta guardada desde el chat.",contentText:reply,projectId:selectedProjectId()})});
+   const dot=filename.lastIndexOf(".");
+   const baseName=dot>0?filename.slice(0,dot):filename;
+   await api("/api/assets",{method:"POST",body:JSON.stringify({name:baseName,filename,kind:"note",description:"Respuesta guardada desde el chat.",contentText:reply,projectId:selectedProjectId()})});
    await Promise.all([loadAssets(),refreshHealth()]);
    toast("Respuesta guardada en Recursos");
   }catch(error){toast(error.message)}
@@ -207,7 +209,9 @@ function attachMessageActions(row,reply){
    if(filename===null)return;
    const safeName=filename.toLowerCase().endsWith(".luau")?filename:""+filename+".luau";
    try{
-    await api("/api/assets",{method:"POST",body:JSON.stringify({name:safeName.replace(/\\.[^.]+$/,""),filename:safeName,kind:"script",description:"Bloque Luau extraído de una respuesta del chat.",contentText:codeText,projectId:selectedProjectId()})});
+    const dot=safeName.lastIndexOf(".");
+    const baseName=dot>0?safeName.slice(0,dot):safeName;
+    await api("/api/assets",{method:"POST",body:JSON.stringify({name:baseName,filename:safeName,kind:"script",description:"Bloque Luau extraído de una respuesta del chat.",contentText:codeText,projectId:selectedProjectId()})});
     await Promise.all([loadAssets(),refreshHealth()]);
     toast("Script Luau guardado en Recursos");
    }catch(error){toast(error.message)}
