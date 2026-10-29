@@ -51,4 +51,7 @@ test("el brief define conexión real, pruebas y límites de publicación", async
   assert.match(brief, /Do not publish the experience/i);
   assert.match(brief, /LightingShow.server.luau/);
   assert.match(brief, /RodeoRide.server.luau/);
+  assert.match(brief, /execute_luau/);
+  assert.match(brief, /Do not spend the next turn only narrating/i);
+  assert.match(brief, /Verify a real modification before proceeding/i);
 });
