@@ -6,6 +6,7 @@ Este paquete es la base reproducible para el botón **Construir festival en Stud
 - `BuildFestival.lua`: constructor de escenario, truss, pantallas LED gráficas, pilas de bocinas, siluetas de banda norteña con acordeón, bajo sexto, micrófonos y batería, gradas, público estilizado, entrada, puestos abiertos, backstage y arena arcade.
 - `LightingShow.server.luau`: controlador de luces en servidor con apertura, looks de color y final.
 - `RodeoRide.server.luau`: minijuego arcade de 12 segundos; la puntuación se calcula en el servidor.
+- `CrowdAnimation.client.luau`: anima un máximo de 42 brazos del público localmente con tweens ligeros.
 - `BUILD-BRIEF.md`: instrucciones de implementación, fases y criterios de aceptación para Codex.
 
 ## Flujo previsto
