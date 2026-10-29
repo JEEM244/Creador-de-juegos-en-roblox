@@ -20,6 +20,8 @@ const HOST = "127.0.0.1";
 const AI_BASE_URL = (process.env.AI_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
 const AI_API_KEY = process.env.AI_API_KEY || "";
 const AI_MODEL = process.env.AI_MODEL || "gpt-6-luna";
+const REASONING_EFFORTS = new Set(["none", "low", "medium", "high", "xhigh", "max"]);
+const AI_REASONING_EFFORT = REASONING_EFFORTS.has(process.env.AI_REASONING_EFFORT) ? process.env.AI_REASONING_EFFORT : "none";
 const dataDir = path.resolve(process.env.DATA_DIR || path.join(__dirname, "data"));
 const assetsDir = path.join(dataDir, "assets");
 const statePath = path.join(dataDir, "state.json");
@@ -152,12 +154,19 @@ const systemPrompt = "Eres el copiloto de Norteño Studio AI, un estudio para cr
 
 async function callAi(messages, extra = {}) {
   if (!AI_API_KEY) throw fail(503, "Falta configurar AI_API_KEY en el archivo .env.");
+  const requestBody = { model: AI_MODEL, messages, ...extra };
+  if (AI_BASE_URL.includes("api.openai.com")) {
+    requestBody.reasoning_effort = AI_REASONING_EFFORT;
+    if (AI_REASONING_EFFORT === "none") requestBody.temperature = 0.35;
+  } else {
+    requestBody.temperature = 0.35;
+  }
   let response;
   try {
     response = await fetch(AI_BASE_URL + "/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + AI_API_KEY },
-      body: JSON.stringify({ model: AI_MODEL, messages, temperature: 0.35, ...extra }),
+      body: JSON.stringify(requestBody),
       signal: AbortSignal.timeout(120000)
     });
   } catch {
