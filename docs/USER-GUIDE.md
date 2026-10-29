@@ -1,31 +1,36 @@
 # Guía de uso — Norteño Studio AI
 
 ## 1. Iniciar
-Usa Node.js 20 o superior. Copia `.env.example` a `.env`; para usar chat y planificador, configura una clave de API compatible. Ejecuta `npm start` y abre `http://127.0.0.1:4173`.
+Usa Node.js 20 o superior. Copia `.env.example` a `.env`; para utilizar chat y planificador configura una clave API compatible. Ejecuta `npm start` y abre `http://127.0.0.1:4173`.
 
-Si no tienes una clave API, puedes usar la cola manual de tareas y la biblioteca, pero el chat y el planificador de IA no podrán completar peticiones. No hay que poner la clave en el navegador.
+Sin clave API puedes gestionar proyectos, tareas y archivos manualmente, pero el chat y el planificador no pueden completar peticiones de IA. No pongas claves en el navegador. La API puede generar costes independientes de la suscripción de ChatGPT/Codex.
 
 ## 2. Crear un proyecto
-Pulsa **+ Proyecto**, escribe un nombre y una descripción. Selecciona el proyecto desde el menú superior para filtrar la cola y los recursos. Proyectos y tareas se guardan en el almacenamiento local de la app.
+Pulsa **+ Proyecto**, escribe un nombre y una descripción. Selecciona el proyecto desde el menú superior para filtrar la cola y la biblioteca. Los datos se guardan en la carpeta local `data/`.
 
 ## 3. Planificar una idea
-Abre **Planificador**, escribe una meta concreta y pulsa **Crear plan**. La IA convierte la idea en subtareas, asigna una herramienta sugerida y propone criterios de aceptación. El sistema guarda las tareas con estado **Planificada**; esto no significa que se ejecutaron.
+Abre **Planificador**, escribe una meta concreta y pulsa **Crear plan**. La IA prepara subtareas, sugiere herramientas y propone criterios de aceptación. El sistema guarda las tareas como **Planificadas**; esto no significa que ya se ejecutaron.
 
-Puedes cambiar cada tarea a aprobada, en progreso, bloqueada, terminada o cancelada. Marca una tarea como terminada solo después de comprobar su resultado.
+Actualiza el estado al trabajar. Las tareas con dependencias no pueden pasar a **En progreso** ni **Terminada** hasta que las tareas previas estén terminadas.
 
 ## 4. Chat
-El chat es para diseño, preguntas y planificación. No puede ejecutar acciones dentro de Roblox Studio por sí solo. Para generar y seguir tareas de forma estructurada, usa la pestaña **Planificador**.
+Usa el chat para diseñar sistemas, resolver preguntas y redactar código. Cada respuesta se puede copiar o guardar como nota en **Recursos**. Si contiene un bloque de código Lua/Luau, puedes guardar ese bloque como archivo Luau. El chat no ejecuta scripts en Roblox Studio.
 
-## 5. Guardar scripts y recursos
-En **Recursos**, puedes subir un archivo admitido o escribir un script Luau. Los archivos se almacenan bajo `data/assets/` y se pueden descargar desde la biblioteca. El límite es 8 MB por recurso.
+## 5. Recursos
+En **Recursos**, puedes subir archivos admitidos o escribir un script Luau. Los archivos se almacenan en `data/assets/` y se descargan desde la biblioteca. El límite es 8 MB por recurso.
 
-La app no ejecuta ni valida el código Luau y no importa un modelo automáticamente a Studio. Descarga el archivo, revisa su contenido y úsalo manualmente en Roblox Studio. Comprueba el formato y la licencia del recurso antes de incorporarlo a un juego publicado.
+La app no ejecuta ni valida código Luau ni importa modelos automáticamente. Descarga el archivo, revisa su contenido y úsalo manualmente en Roblox Studio. Comprueba el formato, la procedencia y la licencia antes de incorporar un recurso a un juego publicado.
 
-## 6. Conectar Codex y Roblox Studio
-Sigue [la guía MCP para Windows](ROBLOX-STUDIO-MCP.md). La conexión ocurre en el cliente Codex y Roblox Studio. Esta app no la comprueba directamente y no debe mostrarla como conectada sin pruebas.
+## 6. Exportar para Codex
+En **Conexiones**, usa **Brief para Codex** para descargar un archivo Markdown con los proyectos y tareas, los criterios de aceptación y una lista de comprobaciones para Roblox Studio MCP. Ábrelo o pásalo a Codex CLI cuando trabajes en el proyecto.
 
-## 7. Copia de seguridad
-Cierra la app y copia la carpeta `data/` a una ubicación segura. Incluye `state.json`, `activity.jsonl` y `assets/`. Esta carpeta está ignorada por Git para evitar subir datos y archivos del usuario.
+El brief no ejecuta las tareas. Codex debe comprobar que el servidor MCP está conectado, revisar cambios importantes y comunicar qué ha probado.
 
-## 8. Pruebas
-Ejecuta `npm test`. GitHub Actions ejecuta las pruebas de servidor en Node.js 20 y 22. No se envían solicitudes a un modelo durante las pruebas y estas no requieren clave API.
+## 7. Conectar Codex y Roblox Studio
+Sigue [la guía MCP para Windows](ROBLOX-STUDIO-MCP.md). La conexión ocurre en Codex y Roblox Studio, por separado de esta app. No se muestra como activa hasta que se verifique dentro de Studio y mediante herramientas que devuelvan datos reales.
+
+## 8. Exportar y hacer copias de seguridad
+Los botones **Exportar Markdown** y **Exportar JSON** descargan proyectos, tareas y metadatos de recursos; no incluyen los archivos binarios. Para conservar todo, cierra la app y copia la carpeta `data/` a una ubicación segura, incluyendo `state.json`, `activity.jsonl` y `assets/`.
+
+## 9. Pruebas
+Ejecuta `npm test`. GitHub Actions ejecuta pruebas del servidor en Node.js 20 y 22. Las pruebas no requieren una clave de API y utilizan un proveedor simulado para verificar el planificador.
