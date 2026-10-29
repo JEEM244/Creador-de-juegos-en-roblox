@@ -138,6 +138,21 @@ function spawnCodex(args, options = {}) {
   }
   return spawn(CODEX_EXECUTABLE, args, spawnOptions);
 }
+function stopCodexProcess(child) {
+  if (!child) return;
+  if (process.platform === "win32" && Number.isInteger(child.pid)) {
+    let killer;
+    try {
+      killer = spawn("taskkill.exe", ["/PID", String(child.pid), "/T", "/F"], {
+        windowsHide: true, stdio: "ignore"
+      });
+      killer.once("error", () => { try { child.kill(); } catch {} });
+      killer.once("close", code => { if (code !== 0) { try { child.kill(); } catch {} } });
+      return;
+    } catch {}
+  }
+  try { child.kill(); } catch {}
+}
 function appendCodexOutput(run, chunk) {
   run.output = (run.output + String(chunk)).slice(-CODEX_MAX_OUTPUT_CHARS);
   run.updatedAt = new Date().toISOString();
@@ -189,7 +204,7 @@ function runCodexDiagnostic(args, timeoutMs = 5000) {
     }));
     child.once("close", code => finish({ code, error: null }));
     timer = setTimeout(() => {
-      child.kill();
+      stopCodexProcess(child);
       finish({ code: null, error: "La comprobación de Codex agotó el tiempo límite." });
     }, timeoutMs);
     timer.unref?.();
@@ -282,7 +297,7 @@ function startCodexRun(input) {
     if (run.status !== "running") return;
     run.timedOut = true;
     appendCodexOutput(run, "\nSe alcanzó el límite de 10 minutos; se solicitó detener Codex.\n");
-    run.child.kill();
+    stopCodexProcess(run.child);
   }, CODEX_RUN_TIMEOUT_MS);
   run.timer.unref?.();
   run.child.stdin.on("error", () => {});
@@ -795,7 +810,7 @@ const server = http.createServer(async (req, res) => {
         run.cancelRequested = true;
         run.status = "cancelling";
         appendCodexOutput(run, "\nSe solicitó cancelar la ejecución…\n");
-        try { run.child.kill(); } catch {}
+        stopCodexProcess(run.child)
         return send(res, 202, { run: publicCodexRun(run) });
       }
     }
