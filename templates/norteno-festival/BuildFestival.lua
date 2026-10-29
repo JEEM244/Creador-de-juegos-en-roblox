@@ -154,7 +154,7 @@ end
 local function addTruss(parent: Instance, a: Vector3, b: Vector3, thickness: number, color: Color3)
   local delta = b - a
   local beam = makePart(parent, "TrussMember", Vector3.new(thickness, thickness, delta.Magnitude),
-    CFrame.lookAt((a + b) / 2, b) * CFrame.Angles(math.pi / 2, 0, 0),
+    CFrame.lookAt((a + b) / 2, b),
     color, Enum.Material.Metal)
   beam.CanCollide = false
   return beam
