@@ -112,6 +112,8 @@ test("GET / sirve la interfaz en español", async () => {
   assert.match(html, /Norteño Studio AI/);
   assert.match(html, /Construir festival en Studio/);
   assert.match(html, /buildFestivalBtn/);
+  assert.match(html, /Comprobando Codex CLI/);
+  assert.match(html, /Error al comprobar Codex/);
 });
 
 test("proyectos se crean, actualizan y validan", async () => {
