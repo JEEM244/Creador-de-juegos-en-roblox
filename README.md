@@ -64,7 +64,9 @@ Las rutas son para uso local; la aplicación escucha por defecto solo en `127.0.
 - Los archivos se guardan en la carpeta local `data`, ignorada por Git.
 - Se aceptan únicamente extensiones conocidas; no se extraen archivos comprimidos ni se ejecutan scripts de la biblioteca.
 - El código Luau se almacena y descarga como archivo; la aplicación no afirma haberlo ejecutado en Roblox Studio.
-- La app no comprueba de forma automática la conexión MCP, no genera modelos por sí misma y no publica juegos.
+- El diagnóstico confirma que Codex CLI y la entrada MCP están configurados, pero no demuestra que exista una sesión real de Studio conectada. La propia ejecución debe comprobarlo.
+- El puente de Codex usa sandbox `workspace-write`, aprobaciones `on-request`, límite de 10 minutos, una ejecución simultánea y un botón de cancelación. El proceso puede modificar el juego abierto si el MCP está disponible; revisa la ejecución y Studio antes de marcar la tarea como terminada.
+- La app no genera modelos por sí misma y no publica juegos.
 - Mantén copias de seguridad del proyecto Roblox y revisa cada cambio antes de publicarlo.
 
 ## Guía de uso
