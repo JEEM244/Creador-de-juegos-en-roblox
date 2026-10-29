@@ -1,37 +1,40 @@
 # Hoja de ruta
 
-## Fase 0 — Base local (actual)
-- [x] Interfaz única con chat y panel de integraciones.
+## Fase 0 — Base local
+- [x] Interfaz en español con chat y panel de integraciones.
 - [x] Servidor local sin dependencias npm.
-- [x] Proxy de chat con Ollama y comprobación de estado.
-- [x] Cola temporal de tareas y registro local de actividad.
-- [ ] Pruebas automatizadas del servidor y la interfaz.
-- [ ] Persistencia de proyectos y tareas tras reiniciar.
+- [x] Proxy de chat para proveedores compatibles con Chat Completions.
+- [x] Comprobación local del estado de configuración de IA.
+- [x] Cola inicial de tareas y registro de actividad.
+- [ ] Ejecutar pruebas automatizadas del servidor y la interfaz.
+- [ ] Persistir proyectos y estados de tareas tras reiniciar.
 
-## Fase 1 — Roblox Studio
-- [ ] Documentar la configuración del servidor MCP de Roblox Studio en Windows.
-- [ ] Añadir comprobación de conectividad MCP real.
-- [ ] Añadir un catálogo de acciones permitidas: inspeccionar escena, crear carpeta, insertar pieza, modificar propiedades seguras.
-- [ ] Presentar una vista previa de acciones y solicitar aprobación antes de ejecutarlas.
-- [ ] Registrar resultados, errores y opción de deshacer cuando el protocolo lo permita.
+## Fase 1 — Flujo de trabajo con Codex y Roblox Studio
+- [x] Identificar el servidor MCP integrado de Roblox Studio como integración recomendada.
+- [x] Documentar la conexión de Roblox Studio con Codex CLI en Windows.
+- [ ] Probar una sesión real de Codex CLI conectada a Roblox Studio en la máquina del usuario.
+- [ ] Crear un procedimiento repetible: inspeccionar escena, proponer cambio, revisar aprobación, ejecutar y verificar resultado.
+- [ ] Mostrar en la app el estado real de conexión; no inferir conexión a partir de que la configuración exista.
+- [ ] Añadir una vista previa de tareas y confirmación explícita para acciones importantes.
 
-## Fase 2 — Generación de recursos
-- [ ] Definir interfaz común de proveedores para imagen, modelo 3D y textura.
-- [ ] Añadir un proveedor por vez, con claves almacenadas exclusivamente en el servidor.
-- [ ] Guardar metadatos de licencia, origen, formato, dimensiones y estado de importación.
-- [ ] Permitir previsualizar, descargar y organizar recursos antes de importarlos.
+## Fase 2 — Planificación y tareas
+- [ ] Convertir una petición en un plan estructurado con objetivo, subtareas, dependencias y criterios de aceptación.
+- [ ] Permitir aprobar, pausar, reintentar, cancelar y marcar tareas terminadas.
+- [ ] Guardar proyectos y tareas en almacenamiento local persistente.
+- [ ] Exportar scripts Luau y archivos de diseño para revisión antes de usarlos.
 
-## Fase 3 — Flujo de creación
-- [ ] Convertir peticiones del chat en planes estructurados con dependencias.
-- [ ] Permitir aprobar, pausar, reintentar y cancelar tareas.
-- [ ] Añadir archivos de proyecto y exportación de scripts Luau revisables.
-- [ ] Añadir pruebas de regresión y validación en Roblox Studio.
+## Fase 3 — Recursos de juego
+- [ ] Evaluar primero las funciones de generación y búsqueda de recursos disponibles en Roblox Studio MCP.
+- [ ] Añadir proveedores externos de imagen/modelos solo cuando aporten algo que Studio no resuelva.
+- [ ] Guardar metadatos de origen, licencia, formato y estado de importación.
+- [ ] Permitir previsualizar y organizar recursos antes de integrarlos.
 
-## Fase 4 — Calidad y publicación
-- [ ] Diagnóstico de rendimiento y límites de memoria.
-- [ ] Revisión de seguridad y permisos.
-- [ ] Flujo explícito de publicación con confirmación final.
-- [ ] Empaquetado sencillo para Windows.
+## Fase 4 — Pruebas y publicación
+- [ ] Validar scripts y probar el juego en Roblox Studio.
+- [ ] Registrar errores y resultados de las pruebas.
+- [ ] Diagnosticar rendimiento en escenas con luces, público, audio y objetos interactivos.
+- [ ] Añadir flujo explícito de publicación con confirmación final.
+- [ ] Empaquetar la app local para Windows.
 
 ## Criterio de éxito
-Una sola instrucción produce un plan verificable; cada tarea muestra qué herramienta necesita, qué se ha hecho realmente y qué falta. No se simulan integraciones inexistentes ni se ejecutan cambios destructivos sin aprobación.
+Una instrucción produce un plan revisable; cada tarea muestra su estado y herramienta requerida. Las conexiones se verifican de verdad, las modificaciones importantes requieren revisión y no se presentan como completadas acciones que no se ejecutaron.
