@@ -21,6 +21,7 @@ test("el constructor está marcado y no ejecuta una segunda copia silenciosament
   assert.match(source, /AccordionBody/);
   assert.match(source, /BajoSextoBody/);
   assert.match(source, /DrumKick/);
+  assert.match(source, /PerformerArm/);
   assert.match(source, /StallBackWall/);
   assert.match(source, /for step = 1, 10 do/);
 });
