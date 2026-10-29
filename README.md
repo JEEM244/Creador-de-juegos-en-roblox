@@ -18,6 +18,7 @@ No requiere dependencias de npm. Para desarrollo puedes usar `npm run dev`; para
 
 ## Funciones disponibles
 - **Chat de creación:** conversación con un modelo configurado mediante `AI_BASE_URL`, `AI_MODEL` y `AI_API_KEY`.
+- **Ejecución con Codex CLI:** envía una instrucción o tarea guardada al Codex instalado en Windows; consulta instalación y configuración MCP, enseña la salida y permite cancelar. Usa el sandbox `workspace-write` y aprobación `on-request`.
 - **Planificador:** envía una idea al modelo, solicita un plan estructurado y guarda las subtareas en la cola.
 - **Proyectos:** crea, filtra, renombra y elimina proyectos.
 - **Cola de tareas:** guarda tareas en disco, cambia su estado, edita detalles y elimina tareas.
@@ -30,6 +31,8 @@ Configuración por defecto en `.env.example`:
 - `AI_BASE_URL=https://api.openai.com/v1`
 - `AI_MODEL=gpt-6-luna` (modelo de menor coste para tareas enfocadas; revisa la documentación vigente)
 - `AI_REASONING_EFFORT=none` (parámetro pensado para usar el modelo con baja latencia y permitir `temperature` en Chat Completions)
+- `CODEX_EXECUTABLE=codex` (opcional; comando o ruta al CLI)
+- `CODEX_WORKDIR=` (opcional; carpeta de trabajo existente para Codex)
 - `AI_API_KEY=` (se debe completar localmente)
 
 Puedes utilizar otro proveedor que implemente `/chat/completions`, pero algunas funciones como el modo JSON del planificador dependen de la compatibilidad del proveedor. Una suscripción a ChatGPT o Codex no implica que tengas créditos de API; revisa los costes y límites antes de enviar peticiones.
@@ -39,10 +42,14 @@ La comprobación de configuración solo indica si existe una clave. No demuestra
 ## Conectar Codex CLI con Roblox Studio
 La vía recomendada es el servidor MCP integrado en Studio. Consulta [la guía de configuración de Windows](docs/ROBLOX-STUDIO-MCP.md).
 
-La app web **no se conecta directamente al MCP ni ejecuta cambios dentro de Studio**. Codex CLI y Roblox Studio deben configurarse por separado, y la conexión real debe probarse allí. Los recursos guardados en la biblioteca se descargan para luego importarlos o revisarlos en Studio.
+La app puede lanzar Codex CLI con la configuración local existente mediante el botón **Enviar a Codex**. Antes de iniciar, confirma la acción; el puente verifica que `Roblox_Studio` esté en `codex mcp list` y muestra la salida de Codex. La ejecución real aún debe probarse en la computadora con Studio abierto. La app no controla por sí misma el protocolo MCP. Los recursos guardados en la biblioteca se descargan para importarlos o revisarlos en Studio.
 
 ## API local
 - `GET /api/health`: versión, contadores y estado de configuración.
+- `GET /api/codex/status`: comprueba si el CLI está instalado y si `Roblox_Studio` figura en la configuración MCP.
+- `POST /api/codex/runs`: inicia una ejecución con Codex, tras verificar la configuración.
+- `GET /api/codex/runs` y `GET /api/codex/runs/:id`: consulta la salida y el estado.
+- `POST /api/codex/runs/:id/cancel`: solicita cancelar una ejecución activa.
 - `GET/POST /api/projects`, `PATCH/DELETE /api/projects/:id`: proyectos.
 - `GET/POST /api/jobs`, `PATCH/DELETE /api/jobs/:id`: tareas.
 - `POST /api/plan`: genera un plan con IA y guarda las tareas.
