@@ -173,7 +173,7 @@ function pruneCodexRuns() {
     if (run.status !== "running" && id !== activeCodexRunId) codexRuns.delete(id);
   }
 }
-function runCodexDiagnostic(args, timeoutMs = 5000) {
+function runCodexDiagnostic(args, timeoutMs = 12000) {
   return new Promise(resolve => {
     let output = "";
     let settled = false;
@@ -213,16 +213,24 @@ function runCodexDiagnostic(args, timeoutMs = 5000) {
 async function getCodexStatus() {
   const version = await runCodexDiagnostic(["--version"]);
   if (version.code !== 0) {
-    return { installed: false, version: null, mcpServerRegistered: false,
-      message: version.error || "Codex CLI no respondió correctamente." };
+    const detail = version.output.trim().replace(/\s+/g, " ").slice(0, 500);
+    const reason = version.error || (version.code === null
+      ? "Codex CLI terminó sin código de salida."
+      : "Codex CLI devolvió el código " + version.code + ".");
+    return {
+      installed: false, version: null, mcpServerRegistered: false,
+      message: [reason, detail ? "Salida del CLI: " + detail : ""].filter(Boolean).join(" ")
+    };
   }
   const mcp = await runCodexDiagnostic(["mcp", "list"]);
+  const mcpDetail = mcp.output.trim().replace(/\s+/g, " ").slice(0, 500);
   return {
     installed: true,
     version: text(version.output, 120).split(/\r?\n/)[0],
     mcpCheckOk: mcp.code === 0,
     mcpServerRegistered: mcp.code === 0 && /Roblox_Studio/i.test(mcp.output),
-    message: mcp.error || (mcp.code === 0 ? "" : "No se pudo consultar la lista de servidores MCP.")
+    message: mcp.error || (mcp.code === 0 ? "" :
+      ["No se pudo consultar la lista de servidores MCP (código " + mcp.code + ").", mcpDetail ? "Salida del CLI: " + mcpDetail : ""].filter(Boolean).join(" "))
   };
 }
 function startCodexRun(input) {
