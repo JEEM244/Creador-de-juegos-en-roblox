@@ -16,7 +16,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function startServer(options = {}) {
   serverProcess = spawn(process.execPath, ["server.js"], {
     cwd: process.cwd(),
-    env: { ...process.env, PORT: String(port), AI_API_KEY: options.apiKey ?? "", AI_BASE_URL: options.aiBaseUrl || "https://api.openai.com/v1", CODEX_EXECUTABLE: options.codexExecutable || "codex-command-missing-in-tests", DATA_DIR: dataDir },
+    env: { ...process.env, PORT: String(port), AI_API_KEY: options.apiKey ?? "", AI_BASE_URL: options.aiBaseUrl || "https://api.openai.com/v1", CODEX_EXECUTABLE: options.codexExecutable || "codex-command-missing-in-tests", CODEX_WORKDIR: options.codexWorkdir || process.cwd(), DATA_DIR: dataDir },
     stdio: ["ignore", "ignore", "pipe"]
   });
   let stderr = "";
@@ -321,4 +321,45 @@ test("la exportación por proyecto filtra tareas y metadatos", async () => {
   assert.equal(exported.projects.length, 1);
   assert.equal(exported.projects[0].id, project.id);
   assert.ok(exported.jobs.every(job => job.projectId === project.id));
+});
+
+test("el puente Codex lanza una ejecución aislada y captura su salida", { skip: process.platform === "win32" ? "el ejecutable de prueba usa un shim POSIX" : false }, async () => {
+  const { writeFile, chmod } = await import("node:fs/promises");
+  const fakeCodex = path.join(dataDir, "codex-fake");
+  await writeFile(fakeCodex, `#!/bin/sh
+case "$1" in
+  --version) echo "codex-test 1.0"; exit 0 ;;
+  mcp) echo "Roblox_Studio enabled"; exit 0 ;;
+  exec) echo "FAKE CODEX STARTED"; cat; exit 0 ;;
+  *) echo "unexpected command"; exit 2 ;;
+esac
+`, "utf8");
+  await chmod(fakeCodex, 0o755);
+  await stopServer();
+  await startServer({ codexExecutable: fakeCodex, codexWorkdir: process.cwd() });
+  try {
+    const status = await jsonRequest("/api/codex/status");
+    assert.equal(status.data.installed, true);
+    assert.equal(status.data.mcpServerRegistered, true);
+
+    const started = await jsonRequest("/api/codex/runs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: "Prueba de puente", prompt: "Lee la escena y no cambies nada." })
+    });
+    assert.equal(started.response.status, 202);
+    const id = started.data.run.id;
+    let result;
+    for (let attempt = 0; attempt < 50; attempt++) {
+      result = await jsonRequest("/api/codex/runs/" + id);
+      if (result.data.run.status !== "running") break;
+      await sleep(100);
+    }
+    assert.equal(result.data.run.status, "completed");
+    assert.match(result.data.run.output, /FAKE CODEX STARTED/);
+    assert.match(result.data.run.output, /Lee la escena y no cambies nada/);
+  } finally {
+    await stopServer();
+    await startServer();
+  }
 });
