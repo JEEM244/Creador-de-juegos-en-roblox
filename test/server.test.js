@@ -108,6 +108,8 @@ test("GET / sirve la interfaz en español", async () => {
   assert.equal(response.status, 200);
   assert.match(html, /<html lang="es">/);
   assert.match(html, /Norteño Studio AI/);
+  assert.match(html, /Construir festival en Studio/);
+  assert.match(html, /buildFestivalBtn/);
 });
 
 test("proyectos se crean, actualizan y validan", async () => {
