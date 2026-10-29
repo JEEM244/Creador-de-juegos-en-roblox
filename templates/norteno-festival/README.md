@@ -3,7 +3,7 @@
 Este paquete es la base reproducible para el botón **Construir festival en Studio** de Norteño Studio AI.
 
 ## Archivos
-- `BuildFestival.lua`: constructor de escenario, truss, pantallas LED de texto, audio visual (sin archivos de música), cabinas de bocinas, gradas, público estilizado, entrada, puestos, backstage y arena arcade.
+- `BuildFestival.lua`: constructor de escenario, truss, pantallas LED gráficas, pilas de bocinas, siluetas de banda norteña con acordeón, bajo sexto, micrófonos y batería, gradas, público estilizado, entrada, puestos abiertos, backstage y arena arcade.
 - `LightingShow.server.luau`: controlador de luces en servidor con apertura, looks de color y final.
 - `RodeoRide.server.luau`: minijuego arcade de 12 segundos; la puntuación se calcula en el servidor.
 - `BUILD-BRIEF.md`: instrucciones de implementación, fases y criterios de aceptación para Codex.
@@ -21,7 +21,7 @@ El constructor marca su salida con el atributo `GeneratedByNortenoStudioAI`. No 
 ## Límites conocidos
 - La escena usa piezas nativas para que no dependa de IDs de activos externos. Es una base procedural estilizada, no modelos escaneados ni geometría AAA.
 - Las pantallas son composición gráfica con `SurfaceGui`; no reproducen vídeo ni música por sí solas.
-- La multitud es un conjunto de siluetas estáticas para controlar el coste. No equivale a una multitud de NPC animados.
+- La banda y el público son siluetas/props estáticos para controlar el coste. No equivalen a músicos animados, una multitud de NPC con comportamiento ni una simulación musical.
 - La luz del show cambia colores y estados. La sincronización real con audio requiere música autorizada y una capa adicional de análisis/tiempo.
 - El minijuego es una atracción arcade no gráfica; las puntuaciones se calculan en el servidor, pero todavía debe probarse con varios jugadores.
 - El código fuente de esta carpeta no demuestra una ejecución exitosa en Roblox Studio. Revisa los resultados y los errores de salida antes de guardar/publicar.
