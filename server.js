@@ -312,7 +312,14 @@ const server = http.createServer(async (req, res) => {
       const input = await bodyJson(req);
       if (!text(input.title, 180)) throw fail(400, "Falta el título de la tarea.");
       const projectId = validateProjectId(input.projectId);
-      const job = makeJob(input, projectId);
+      const dependencies = Array.isArray(input.dependsOn) ? input.dependsOn.map(numericId) : [];
+      if (dependencies.some(id => !id)) throw fail(400, "La lista de dependencias contiene un ID inválido.");
+      for (const dependencyId of dependencies) {
+        const dependency = state.jobs.find(job => job.id === dependencyId);
+        if (!dependency) throw fail(400, "Una tarea dependiente no existe.");
+        if (dependency.projectId !== projectId) throw fail(400, "Las tareas dependientes deben pertenecer al mismo proyecto.");
+      }
+      const job = makeJob(input, projectId, { dependsOn: dependencies });
       state.jobs.unshift(job);
       await saveState();
       await logEvent({ type: "job-created", jobId: job.id, projectId });
@@ -335,6 +342,13 @@ const server = http.createServer(async (req, res) => {
         if (input.tool !== undefined) job.tool = JOB_TOOLS.has(input.tool) ? input.tool : "Manual";
         if (input.status !== undefined) {
           if (!JOB_STATUSES.has(input.status)) throw fail(400, "Estado inválido.");
+          if (input.status === "in_progress" || input.status === "done") {
+            const unfinished = (job.dependsOn || []).filter(dependencyId => {
+              const dependency = state.jobs.find(candidate => candidate.id === dependencyId);
+              return dependency && dependency.status !== "done";
+            });
+            if (unfinished.length) throw fail(409, "Completa primero las tareas dependientes: " + unfinished.join(", ") + ".");
+          }
           job.status = input.status;
         }
         if (input.projectId !== undefined) job.projectId = validateProjectId(input.projectId);
