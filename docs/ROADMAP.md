@@ -6,7 +6,8 @@
 - [x] Proxy de chat para proveedores compatibles con Chat Completions.
 - [x] Comprobación local del estado de configuración de IA.
 - [x] Cola inicial de tareas y registro de actividad.
-- [ ] Ejecutar pruebas automatizadas del servidor y la interfaz.
+- [x] Añadir pruebas automatizadas para rutas principales del servidor y comprobarlas con CI en Node.js 20 y 22.
+- [ ] Añadir pruebas automatizadas de navegador para la interfaz.
 - [ ] Persistir proyectos y estados de tareas tras reiniciar.
 
 ## Fase 1 — Flujo de trabajo con Codex y Roblox Studio
