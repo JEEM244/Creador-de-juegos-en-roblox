@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { createServer } from "node:http";
 import { after, before, test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtemp, rm } from "node:fs/promises";
@@ -12,10 +13,10 @@ let dataDir;
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-async function startServer() {
+async function startServer(options = {}) {
   serverProcess = spawn(process.execPath, ["server.js"], {
     cwd: process.cwd(),
-    env: { ...process.env, PORT: String(port), AI_API_KEY: "", DATA_DIR: dataDir },
+    env: { ...process.env, PORT: String(port), AI_API_KEY: options.apiKey ?? "", AI_BASE_URL: options.aiBaseUrl || "https://api.openai.com/v1", DATA_DIR: dataDir },
     stdio: ["ignore", "ignore", "pipe"]
   });
   let stderr = "";
@@ -194,6 +195,48 @@ test("la persistencia conserva proyectos y tareas al reiniciar", async () => {
   assert.ok(list.data.jobs.some(job => job.title === "Persistencia de prueba"));
   const projects = await jsonRequest("/api/projects");
   assert.ok(projects.data.projects.some(project => project.name === "Festival Norteño"));
+});
+
+
+test("el planificador convierte una respuesta del proveedor en tareas con dependencias", async () => {
+  const aiPort = 19000 + Math.floor(Math.random() * 9000);
+  const planPayload = {
+    projectName: "Plan de prueba",
+    summary: "Plan devuelto por un proveedor de prueba local.",
+    tasks: [
+      { title: "Crear escenario", detail: "Construir el bloque inicial.", tool: "Roblox Studio", dependsOn: [], acceptanceCriteria: "Escenario visible." },
+      { title: "Añadir luces", detail: "Añadir luces después del escenario.", tool: "Codex", dependsOn: [0], acceptanceCriteria: "Luces verificables." }
+    ]
+  };
+  let authHeader = "";
+  const mockAi = createServer(async (request, response) => {
+    let raw = "";
+    for await (const chunk of request) raw += chunk.toString();
+    authHeader = request.headers.authorization || "";
+    response.writeHead(200, { "Content-Type": "application/json" });
+    response.end(JSON.stringify({ choices: [{ message: { content: JSON.stringify(planPayload) } }] }));
+  });
+  await new Promise(resolve => mockAi.listen(aiPort, "127.0.0.1", resolve));
+  try {
+    await stopServer();
+    await startServer({ apiKey: "test-key", aiBaseUrl: "http://127.0.0.1:" + aiPort + "/v1" });
+    const projects = await jsonRequest("/api/projects");
+    const project = projects.data.projects[0];
+    const result = await jsonRequest("/api/plan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ goal: "Crear un escenario con iluminación", projectId: project.id })
+    });
+    assert.equal(result.response.status, 201);
+    assert.equal(authHeader, "Bearer test-key");
+    assert.equal(result.data.jobs.length, 2);
+    assert.deepEqual(result.data.jobs[1].dependsOn, [result.data.jobs[0].id]);
+    assert.equal(result.data.jobs[1].projectId, project.id);
+  } finally {
+    await stopServer();
+    await new Promise(resolve => mockAi.close(resolve));
+    await startServer();
+  }
 });
 
 test("el chat y el planificador no realizan llamadas externas sin clave API", async () => {
