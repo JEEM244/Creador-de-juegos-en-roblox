@@ -36,6 +36,10 @@ test("los controladores de servidor validan el modelo y sus controles", async ()
   assert.match(rideScript, /ProximityPrompt/);
   assert.match(rideScript, /RodeoBest/);
   assert.match(rideScript, /12 seconds|12/);
+  const crowdScript = await readFile(template("CrowdAnimation.client.luau"), "utf8");
+  assert.match(crowdScript, /StarterPlayerScripts|StarterPlayer/);
+  assert.match(crowdScript, /MAX_ANIMATED_ARMS/);
+  assert.match(crowdScript, /TweenService/);
 });
 
 test("el brief define conexión real, pruebas y límites de publicación", async () => {
