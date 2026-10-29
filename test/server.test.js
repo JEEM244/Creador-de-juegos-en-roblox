@@ -16,7 +16,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function startServer(options = {}) {
   serverProcess = spawn(process.execPath, ["server.js"], {
     cwd: process.cwd(),
-    env: { ...process.env, PORT: String(port), AI_API_KEY: options.apiKey ?? "", AI_BASE_URL: options.aiBaseUrl || "https://api.openai.com/v1", DATA_DIR: dataDir },
+    env: { ...process.env, PORT: String(port), AI_API_KEY: options.apiKey ?? "", AI_BASE_URL: options.aiBaseUrl || "https://api.openai.com/v1", CODEX_EXECUTABLE: options.codexExecutable || "codex-command-missing-in-tests", DATA_DIR: dataDir },
     stdio: ["ignore", "ignore", "pipe"]
   });
   let stderr = "";
@@ -65,6 +65,20 @@ test("GET /api/health informa el estado real de configuración", async () => {
   assert.equal(data.app, "Norteño Studio AI");
   assert.equal(data.ai.configured, false);
   assert.equal(data.integrations.robloxStudioMcp.status, "manual");
+});
+
+test("el puente Codex informa cuando CLI no está instalada y no ejecuta tareas", async () => {
+  const status = await jsonRequest("/api/codex/status");
+  assert.equal(status.response.status, 200);
+  assert.equal(status.data.installed, false);
+
+  const result = await jsonRequest("/api/codex/runs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: "Crear una estructura en Roblox Studio" })
+  });
+  assert.equal(result.response.status, 503);
+  assert.match(result.data.error, /Codex CLI/i);
 });
 
 test("GET / sirve la interfaz en español", async () => {
