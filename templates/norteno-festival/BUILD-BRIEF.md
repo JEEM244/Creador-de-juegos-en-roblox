@@ -5,7 +5,7 @@ Build a polished, playable first version of a large-scale Mexican norteño conce
 
 ## Hard rules
 - First prove the Studio MCP session is live by reading the current place/session and Workspace hierarchy. A configured server in `codex mcp list` alone is not proof.
-- Work only inside a clearly named `Workspace/NortenoFestival` model and purpose-created folders/scripts. Do not delete, rename, or overwrite unrelated user objects. If this model already exists, inspect and update only your own model; avoid duplicate builds.
+- Work only inside a clearly named `Workspace/NortenoFestival` model and purpose-created folders/scripts. Do not remove, rename, or overwrite unrelated user objects. If a marked generated scene already exists, inspect and improve it instead of rerunning the one-time constructor. Avoid duplicate builds.
 - Do not publish the experience. Do not add external packages or use arbitrary Toolbox assets without checking their source. Avoid guessed asset IDs. Use native Parts, Materials, SurfaceGui, PointLight, SpotLight, Attachments, Beams, ProximityPrompts, and scripts when possible.
 - Make changes in small phases, verify after each phase, and keep the existing place intact. If the MCP cannot perform a needed action, state the limitation and continue with a safe fallback.
 - Prioritize a visually composed, detailed scene over an enormous empty map. Use a consistent art direction and real scale, layered depth, intentional silhouettes, signage, trim, cables/truss details, and believable lighting.
