@@ -167,7 +167,55 @@ function renderCurrentProject(){const project=state.projects.find(item=>item.id=
 async function loadJobs(){const id=selectedProjectId();const data=await api("/api/jobs"+(id?"?projectId="+id:""));state.jobs=data.jobs||[];renderJobs()}
 async function loadAssets(){const id=selectedProjectId();const data=await api("/api/assets"+(id?"?projectId="+id:""));state.assets=data.assets||[];renderAssets()}
 function addMessage(role,content){const row=document.createElement("div");row.className="msg "+(role==="user"?"user":"");const avatar=document.createElement("div");avatar.className="avatar";avatar.textContent=role==="user"?"T":"N";const bubble=document.createElement("div");bubble.className="bubble";bubble.textContent=content;row.append(avatar,bubble);$("#messages").append(row);$("#messages").scrollTop=$("#messages").scrollHeight;return row}
-function attachMessageActions(row,reply){const bubble=row.querySelector(".bubble");const actions=document.createElement("div");actions.className="message-actions";const copy=document.createElement("button");copy.className="ghost";copy.textContent="Copiar";copy.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(reply);toast("Respuesta copiada")}catch{toast("No se pudo usar el portapapeles en este navegador")}});const note=document.createElement("button");note.className="ghost";note.textContent="Guardar nota";note.addEventListener("click",async()=>{const name=prompt("Nombre para la nota:","respuesta-chat.md");if(name===null)return;try{await api("/api/assets",{method:"POST",body:JSON.stringify({name:name.replace(/\\.[^.]+$/,""),filename:name.endsWith(".md")?name:name+".md",kind:"note",description:"Respuesta guardada desde el chat.",contentText:reply,projectId:selectedProjectId()})});await Promise.all([loadAssets(),refreshHealth()]);toast("Respuesta guardada en Recursos")}catch(error){toast(error.message)}});actions.append(copy,note);const code=reply.match(/\\`\\`\\`(?:luau|lua)\\s*([\\s\\S]*?)\\`\\`\\`/i);if(code&&code[1].trim()){const saveCode=document.createElement("button");saveCode.className="ghost";saveCode.textContent="Guardar código Luau";saveCode.addEventListener("click",async()=>{const filename=prompt("Nombre del archivo Luau:","respuesta.luau");if(filename===null)return;const safeName=filename.endsWith(".luau")?filename:filename+".luau";try{await api("/api/assets",{method:"POST",body:JSON.stringify({name:safeName.replace(/\\.[^.]+$/,""),filename:safeName,kind:"script",description:"Bloque Luau extraído de una respuesta del chat.",contentText:code[1].trim(),projectId:selectedProjectId()})});await Promise.all([loadAssets(),refreshHealth()]);toast("Script Luau guardado en Recursos")}catch(error){toast(error.message)}});actions.append(saveCode)}bubble.append(actions)}
+function attachMessageActions(row,reply){
+ const bubble=row.querySelector(".bubble");
+ const actions=document.createElement("div");
+ actions.className="message-actions";
+ const copy=document.createElement("button");
+ copy.className="ghost";
+ copy.textContent="Copiar";
+ copy.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(reply);toast("Respuesta copiada")}catch{toast("No se pudo usar el portapapeles en este navegador")}});
+ const note=document.createElement("button");
+ note.className="ghost";
+ note.textContent="Guardar nota";
+ note.addEventListener("click",async()=>{
+  const name=prompt("Nombre para la nota:","respuesta-chat.md");
+  if(name===null)return;
+  try{
+   const filename=name.toLowerCase().endsWith(".md")?name:name+".md";
+   await api("/api/assets",{method:"POST",body:JSON.stringify({name:name.replace(/\\.[^.]+$/,""),filename,kind:"note",description:"Respuesta guardada desde el chat.",contentText:reply,projectId:selectedProjectId()})});
+   await Promise.all([loadAssets(),refreshHealth()]);
+   toast("Respuesta guardada en Recursos");
+  }catch(error){toast(error.message)}
+ });
+ actions.append(copy,note);
+ const fence=String.fromCharCode(96).repeat(3);
+ const blocks=reply.split(fence);
+ let codeText="";
+ for(let i=1;i<blocks.length;i+=2){
+  const lineEnd=blocks[i].indexOf("\n");
+  if(lineEnd<0)continue;
+  const language=blocks[i].slice(0,lineEnd).trim().toLowerCase();
+  if(language==="luau"||language==="lua"){codeText=blocks[i].slice(lineEnd+1).trim();break}
+ }
+ if(codeText){
+  const saveCode=document.createElement("button");
+  saveCode.className="ghost";
+  saveCode.textContent="Guardar código Luau";
+  saveCode.addEventListener("click",async()=>{
+   const filename=prompt("Nombre del archivo Luau:","respuesta.luau");
+   if(filename===null)return;
+   const safeName=filename.toLowerCase().endsWith(".luau")?filename:""+filename+".luau";
+   try{
+    await api("/api/assets",{method:"POST",body:JSON.stringify({name:safeName.replace(/\\.[^.]+$/,""),filename:safeName,kind:"script",description:"Bloque Luau extraído de una respuesta del chat.",contentText:codeText,projectId:selectedProjectId()})});
+    await Promise.all([loadAssets(),refreshHealth()]);
+    toast("Script Luau guardado en Recursos");
+   }catch(error){toast(error.message)}
+  });
+  actions.append(saveCode);
+ }
+ bubble.append(actions);
+}
 
 async function sendChat(){const message=$("#prompt").value.trim();if(!message||state.busy)return;state.busy=true;$("#sendBtn").disabled=true;addMessage("user",message);$("#prompt").value="";const history=state.history.slice(-10);state.history.push({role:"user",content:message});const pending=addMessage("assistant","Pensando…");try{const result=await api("/api/chat",{method:"POST",body:JSON.stringify({message,history})});pending.querySelector(".bubble").textContent=result.reply;state.history.push({role:"assistant",content:result.reply});attachMessageActions(pending,result.reply);}catch(error){pending.querySelector(".bubble").textContent=error.message+(error.message.includes("AI_API_KEY")?"\n\nAbre Conexiones para revisar la configuración.":"");toast(error.message)}finally{state.busy=false;$("#sendBtn").disabled=false;$("#messages").scrollTop=$("#messages").scrollHeight}}
 function addTaskCard(job,side=false){const card=document.createElement("article");card.className="task";const top=document.createElement("div");top.className="task-top";const title=document.createElement("div");title.className="task-title";title.textContent=job.title;const statusTag=document.createElement("span");statusTag.className="tag";statusTag.textContent=STATUSES[job.status]||job.status;top.append(title,statusTag);card.append(top);if(job.detail){const detail=document.createElement("p");detail.textContent=job.detail;card.append(detail)}const meta=document.createElement("div");meta.className="task-meta";const tool=document.createElement("span");tool.className="tag";tool.textContent=job.tool||"Planificador";meta.append(tool);if(job.acceptanceCriteria){const criteria=document.createElement("span");criteria.className="tag";criteria.textContent="Con criterio de aceptación";criteria.title=job.acceptanceCriteria;meta.append(criteria)}if(job.dependsOn?.length){const depends=document.createElement("span");depends.className="tag";depends.textContent="Depende de "+job.dependsOn.length+" tarea(s)";meta.append(depends)}card.append(meta);if(!side){const actions=document.createElement("div");actions.className="task-actions";const select=document.createElement("select");select.setAttribute("aria-label","Estado de "+job.title);STATUS_OPTIONS.forEach(([value,label])=>{const option=document.createElement("option");option.value=value;option.textContent=label;select.append(option)});select.value=job.status;select.addEventListener("change",async()=>{select.disabled=true;try{await api("/api/jobs/"+job.id,{method:"PATCH",body:JSON.stringify({status:select.value})});toast("Estado actualizado");await Promise.all([loadJobs(),refreshHealth()])}catch(error){toast(error.message);select.value=job.status}finally{select.disabled=false}});const edit=document.createElement("button");edit.className="ghost";edit.textContent="Editar";edit.addEventListener("click",async()=>{const newTitle=prompt("Título de la tarea:",job.title);if(newTitle===null)return;const newDetail=prompt("Detalles de la tarea:",job.detail||"");if(newDetail===null)return;try{await api("/api/jobs/"+job.id,{method:"PATCH",body:JSON.stringify({title:newTitle,detail:newDetail})});await loadJobs();toast("Tarea actualizada")}catch(error){toast(error.message)}});const remove=document.createElement("button");remove.className="ghost";remove.textContent="Eliminar";remove.addEventListener("click",async()=>{if(!confirm("¿Eliminar la tarea «"+job.title+"»?"))return;try{await api("/api/jobs/"+job.id,{method:"DELETE"});await Promise.all([loadJobs(),refreshHealth()]);toast("Tarea eliminada")}catch(error){toast(error.message)}});actions.append(select,edit,remove);card.append(actions)}return card}
