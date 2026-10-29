@@ -23,7 +23,7 @@ echo Se abrira el navegador en http://127.0.0.1:4173
 echo Para detener el servidor, cierra la ventana del servidor.
 echo.
 
-start "Norteño Studio AI - Servidor" cmd /k "cd /d ""%~dp0"" && npm start"
+start "Norteño Studio AI - Servidor" /D "%~dp0" cmd /k "npm start"
 timeout /t 3 /nobreak >nul
 start "" "http://127.0.0.1:4173"
 endlocal
