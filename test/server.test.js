@@ -191,3 +191,31 @@ test("se limitan solicitudes JSON excesivas y rutas desconocidas", async () => {
   const missing = await jsonRequest("/api/no-existe");
   assert.equal(missing.response.status, 404);
 });
+
+test("las exportaciones JSON y Markdown incluyen el estado del estudio", async () => {
+  const jsonResponse = await fetch(baseUrl + "/api/export/json");
+  const exported = await jsonResponse.json();
+  assert.equal(jsonResponse.status, 200);
+  assert.equal(exported.format, "norteno-studio-export");
+  assert.ok(exported.projects.some(project => project.name === "Festival Norteño"));
+  assert.ok(exported.jobs.some(job => job.title === "Persistencia de prueba"));
+
+  const markdownResponse = await fetch(baseUrl + "/api/export/markdown");
+  const markdown = await markdownResponse.text();
+  assert.equal(markdownResponse.status, 200);
+  assert.match(markdown, /## Proyectos/);
+  assert.match(markdown, /## Tareas/);
+  assert.match(markdown, /Persistencia de prueba/);
+});
+
+test("la exportación por proyecto filtra tareas y metadatos", async () => {
+  const projectList = await jsonRequest("/api/projects");
+  const project = projectList.data.projects.find(item => item.name === "Festival Norteño");
+  assert.ok(project);
+  const response = await fetch(baseUrl + "/api/export/json?projectId=" + project.id);
+  const exported = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(exported.projects.length, 1);
+  assert.equal(exported.projects[0].id, project.id);
+  assert.ok(exported.jobs.every(job => job.projectId === project.id));
+});
