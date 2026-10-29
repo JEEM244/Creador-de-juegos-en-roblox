@@ -1,48 +1,45 @@
 # Norteño Studio AI — Roblox Game Creator
 
-Un espacio de trabajo local para describir juegos en un chat, convertir las ideas en tareas y preparar recursos para Roblox Studio. La meta es coordinar herramientas desde una sola interfaz, no fingir que un chat por sí solo puede generar y montar un juego completo.
+Aplicación local en español para centralizar el chat de creación, organizar tareas y preparar integraciones con Roblox Studio, Codex y proveedores de recursos.
 
 ## Requisitos
 - Node.js 20 o superior.
-- Opcional: Ollama para chat local.
+- Una clave API de un proveedor de IA compatible con el endpoint Chat Completions.
 - Opcional: Roblox Studio y su servidor MCP habilitado.
-- Opcional: credenciales de proveedores de generación de recursos; se conectarán mediante adaptadores seguros cuando se configure cada proveedor.
+- Opcional: credenciales de servicios de generación de imágenes/modelos 3D.
 
 ## Ejecutar
-1. Descarga/clona este repositorio.
-2. En la carpeta del proyecto ejecuta `npm start`.
-3. Abre `http://localhost:4173`.
-4. Para desarrollo con reinicio automático: `npm run dev`.
+1. Clona el repositorio.
+2. Copia `.env.example` como `.env`.
+3. Abre `.env` y añade tu clave API en `AI_API_KEY`.
+4. Ejecuta `npm start`.
+5. Abre `http://localhost:4173`.
 
-No necesita dependencias de npm: utiliza módulos integrados de Node.js.
+No requiere dependencias de npm. El servidor carga las variables de `.env` directamente. **No subas el archivo `.env` a GitHub.**
 
-## Conectar Ollama
-1. Instala y abre Ollama.
-2. Descarga el modelo sugerido: `ollama pull qwen2.5-coder:3b`.
-3. Confirma que Ollama responda en `http://127.0.0.1:11434`.
-4. Reinicia la aplicación si cambiaste `.env`.
+## Configurar el proveedor de IA en la nube
+Configuración por defecto:
+- `AI_BASE_URL=https://api.openai.com/v1`
+- `AI_MODEL=gpt-4.1-mini`
+- `AI_API_KEY=` (añade tu clave privada)
 
-La interfaz detecta el chat local y envía allí las solicitudes. Sin Ollama, el modo de demostración permite explorar la planificación, pero no genera respuestas reales de un modelo.
+Puedes cambiar la URL y el modelo para otro proveedor compatible con `/chat/completions`. Una suscripción de ChatGPT no incluye necesariamente créditos de API; revisa la facturación y límites del proveedor que elijas.
 
-## Roblox Studio
-El diseño contempla una integración local con Roblox Studio/MCP para que un agente autorizado pueda crear y modificar objetos dentro de Studio. La primera versión **no se conecta automáticamente a MCP ni ejecuta cambios en Roblox**: primero se debe configurar y validar ese puente, y luego añadir una capa de acciones con confirmación del usuario.
-
-## Estado de las funciones
-- Chat local con Ollama: implementado.
-- Planificador inicial de tareas: implementado en la interfaz.
-- Panel de integraciones y estado del servidor: base inicial.
-- Generación real de modelos 3D: requiere conectar un proveedor y su API.
-- Escritura de scripts/edición de mapas en Roblox Studio: requiere integrar y probar el MCP de Studio.
-- Exportar/publicar juegos: no implementado todavía.
+## Integraciones
+- Chat con proveedor de IA en la nube: implementado; requiere clave y conexión válida.
+- Cola inicial de tareas: implementada, con registro local de actividad.
+- Roblox Studio/MCP: pendiente de conectar y probar.
+- Generación de modelos 3D e imágenes: requiere adaptadores y credenciales del proveedor.
+- Ejecución de tareas y publicación de juegos: no implementadas todavía.
 
 ## Seguridad
-- Las claves de servicios externos nunca deben ir en el navegador ni en el repositorio.
-- El servidor escucha por defecto en localhost.
-- Revisa los cambios antes de ejecutar scripts o acciones destructivas en Studio.
-- Usa únicamente recursos, modelos, música y texturas con permisos de uso adecuados.
+- Las claves API se guardan únicamente en el servidor, en `.env`; nunca en el navegador ni en commits.
+- El servidor escucha por defecto en `127.0.0.1`.
+- Revisa las acciones antes de ejecutar scripts o cambios en Roblox Studio.
+- Las llamadas a modelos en la nube pueden generar costes según el proveedor.
 
-## Siguiente etapa
-1. Conectar MCP de Roblox Studio.
-2. Añadir adaptadores de proveedores de modelos 3D y generación de imágenes.
-3. Hacer que el planificador ejecute tareas aprobadas y guarde resultados en un registro.
-4. Añadir importación/exportación de recursos y pruebas automáticas.
+## Próximos pasos
+1. Conectar y validar Roblox Studio por MCP.
+2. Añadir acciones permitidas con vista previa y confirmación.
+3. Añadir proveedores de generación de modelos 3D e imágenes.
+4. Persistir proyectos y tareas, y añadir pruebas automatizadas.
