@@ -242,9 +242,9 @@ makePart(stage, "GoldStagePinstripe", Vector3.new(99, 0.18, 0.18), CFrame.new(0,
   palette.gold, Enum.Material.Neon).CanCollide = false
 for side = -1, 1, 2 do
   local x = side * 43
-  for step = 1, 4 do
-    makePart(stage, "AccessStair", Vector3.new(12, 0.55, 2.7),
-      CFrame.new(x, 1.1 + step * 0.55, -43.5 - step * 2.5),
+  for step = 1, 10 do
+    makePart(stage, "AccessStair", Vector3.new(12, 0.55, 1.75),
+      CFrame.new(x, 0.275 + step * 0.55, -28 - step * 1.7),
       palette.steel, Enum.Material.Metal)
   end
   makePart(stage, "StageSideTower", Vector3.new(4, 15, 5), CFrame.new(side * 52, 9.5, -64),
@@ -480,10 +480,19 @@ for side = -1, 1, 2 do
     palette.gold, Enum.Material.Metal)
 end
 local function makeStall(x: number, z: number, title: string, accent: Color3)
-  local booth = makePart(concessions, "FestivalStall", Vector3.new(18, 8, 12), CFrame.new(x, 4, z),
-    palette.charcoal, Enum.Material.WoodPlanks)
-  makePart(concessions, "StallCounter", Vector3.new(18, 1.4, 3), CFrame.new(x, 1.4, z + 7),
-    palette.brass, Enum.Material.WoodPlanks)
+  local booth = makePart(concessions, "StallDeck", Vector3.new(18, 0.5, 12),
+    CFrame.new(x, 0.25, z), palette.charcoal, Enum.Material.WoodPlanks)
+  -- Open serving side, two wing walls and a clear center for the vendor/player.
+  makePart(concessions, "StallBackWall", Vector3.new(17.5, 7.2, 0.55),
+    CFrame.new(x, 4.1, z - 5.55), palette.steel, Enum.Material.Metal)
+  for side = -1, 1, 2 do
+    makePart(concessions, "StallCornerPost", Vector3.new(0.75, 8, 0.75),
+      CFrame.new(x + side * 8.55, 4.25, z + 5.45), palette.brass, Enum.Material.Metal)
+    makePart(concessions, "StallWingWall", Vector3.new(0.5, 4.8, 8.8),
+      CFrame.new(x + side * 8.55, 2.9, z - 0.5), palette.charcoal, Enum.Material.WoodPlanks)
+  end
+  makePart(concessions, "StallCounter", Vector3.new(16.2, 1.4, 1.3),
+    CFrame.new(x, 1.35, z + 4.25), palette.brass, Enum.Material.WoodPlanks)
   makePart(concessions, "StallRoof", Vector3.new(20, 0.8, 14), CFrame.new(x, 8.6, z),
     palette.black, Enum.Material.Metal)
   for stripe = -1, 1, 2 do
@@ -544,6 +553,14 @@ makePart(rodeo, "ArenaDirt", Vector3.new(78, 1.1, 78), CFrame.new(154, 0.2, -25)
 makePart(rodeo, "ArenaCenterPad", Vector3.new(48, 0.2, 48), CFrame.new(154, 0.9, -25),
   Color3.fromRGB(124, 91, 57), Enum.Material.Sand)
 for side = -1, 1, 2 do
+  for post = 0, 6 do
+    makePart(rodeo, "ArenaFencePost", Vector3.new(0.8, 5.7, 0.8),
+      CFrame.new(154 - 39 + post * 13, 3.15, -25 + side * 39),
+      palette.brass, Enum.Material.Wood)
+    makePart(rodeo, "ArenaFencePost", Vector3.new(0.8, 5.7, 0.8),
+      CFrame.new(154 + side * 39, 3.15, -25 - 39 + post * 13),
+      palette.brass, Enum.Material.Wood)
+  end
   for edge = 0, 1 do
     makePart(rodeo, "ArenaFenceRail", Vector3.new(78, 0.55, 0.55),
       CFrame.new(154, 2.1 + edge * 2.1, -25 + side * 39), palette.cream, Enum.Material.Wood)
