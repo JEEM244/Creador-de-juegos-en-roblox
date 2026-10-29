@@ -277,6 +277,13 @@ test("las exportaciones JSON y Markdown incluyen el estado del estudio", async (
   assert.match(markdown, /## Proyectos/);
   assert.match(markdown, /## Tareas/);
   assert.match(markdown, /Persistencia de prueba/);
+
+  const codexResponse = await fetch(baseUrl + "/api/export/codex");
+  const codexBrief = await codexResponse.text();
+  assert.equal(codexResponse.status, 200);
+  assert.match(codexBrief, /Brief de trabajo para Codex/);
+  assert.match(codexBrief, /servidor MCP Roblox_Studio/);
+  assert.match(codexBrief, /Persistencia de prueba/);
 });
 
 test("la exportación por proyecto filtra tareas y metadatos", async () => {
