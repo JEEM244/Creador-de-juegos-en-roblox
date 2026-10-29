@@ -20,7 +20,7 @@ A premium nighttime regional Mexican / norteño festival. Palette: matte charcoa
 2. Prove MCP is connected to the live Studio session. If no generated scene exists yet, execute the builder source in EDIT mode (not Play mode, where changes would revert). The builder never replaces an existing generated scene; if one is already present, inspect and improve it with MCP instead. If local-file execution is unavailable, reproduce its design using MCP editing tools rather than stopping at a plan.
 3. Keep the generated scene within a marked `Workspace/NortenoFestival` model. The builder preserves any unmarked model with that name by choosing a generated suffix.
 4. The provided builder makes the main stage, layered rigging, LED panels, speaker stacks, crowd and bleachers, entrance, concessions, backstage, and optional arena. Inspect its output and fix any overlaps or broken geometry before moving on.
-5. Read `templates/norteno-festival/LightingShow.server.luau` and `RodeoRide.server.luau`. Install them as scripts in `ServerScriptService` using Studio MCP script-creation/editing tools. Do not merely save their text into a local folder. If the installed MCP cannot create/edit scripts, explain the specific blocker and leave the files available for manual installation.
+5. Read `templates/norteno-festival/LightingShow.server.luau` and `RodeoRide.server.luau`. Install them as scripts in `ServerScriptService` using Studio MCP script-creation/editing tools. Install `templates/norteno-festival/CrowdAnimation.client.luau` as a `LocalScript` in `StarterPlayer/StarterPlayerScripts`. Do not merely save their text into a local folder. If the installed MCP cannot create/edit scripts, explain the specific blocker and leave the files available for manual installation.
 6. The builder applies a named Atmosphere effect and sets global Lighting values for the night scene. Do not delete or modify unrelated effects; report those intentional environment changes so the user can review them.
 7. Use helper functions for any additional parts, signs, lights and props. Set anchored/collision/query properties deliberately.
 
@@ -52,6 +52,7 @@ Create maintainable scripts in appropriate services (use MCP script editing/crea
 - `templates/norteno-festival/BuildFestival.lua`: one-time procedural builder intended for Studio EDIT context; it creates a marked, self-contained scene.
 - `templates/norteno-festival/LightingShow.server.luau`: server-authoritative show toggle and lighting looks.
 - `templates/norteno-festival/RodeoRide.server.luau`: optional 12-second arcade ride challenge with server-side score checks.
+- `templates/norteno-festival/CrowdAnimation.client.luau`: client-local tweening of a limited number of audience arms for a livelier but lightweight crowd.
 
 ## Phase 5 — Quality pass
 1. Inspect the generated hierarchy and check for duplicate builds, floating objects, unanchored static geometry, blocked paths, malformed text and excessive light instances.
