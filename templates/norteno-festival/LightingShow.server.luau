@@ -55,6 +55,13 @@ local function setLook(look)
       descendant.Enabled = true
     elseif descendant:IsA("BasePart") and descendant.Name == "FixtureLens" then
       descendant.Color = look.color
+    end
+  end
+  -- Change the LED wall graphic at the same time as the fixtures.
+  for _, descendant in root:GetDescendants() do
+    if descendant:IsA("Frame") and descendant.Name == "LEDStripe" then
+      descendant.BackgroundColor3 = look.color
+      descendant.BackgroundTransparency = 0.08
     elseif descendant:IsA("TextLabel") and descendant.Name == "Label" then
       descendant.TextColor3 = look.color
     end
@@ -73,6 +80,12 @@ local function stopShow()
       descendant.Enabled = false
     elseif descendant:IsA("BasePart") and descendant.Name == "FixtureLens" then
       descendant.Color = Color3.fromRGB(83, 68, 54)
+    end
+  end
+  for _, descendant in root:GetDescendants() do
+    if descendant:IsA("Frame") and descendant.Name == "LEDStripe" then
+      descendant.BackgroundColor3 = Color3.fromRGB(36, 36, 40)
+      descendant.BackgroundTransparency = 0.2
     end
   end
   prompt.ActionText = "Iniciar show"
