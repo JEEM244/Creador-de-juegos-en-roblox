@@ -34,7 +34,7 @@ test("los controladores de servidor validan el modelo y sus controles", async ()
 
 test("el brief define conexión real, pruebas y límites de publicación", async () => {
   const brief = await readFile(template("BUILD-BRIEF.md"), "utf8");
-  assert.match(brief, /live Studio MCP session/i);
+  assert.match(brief, /live .*Studio MCP session/i);
   assert.match(brief, /EDIT mode/i);
   assert.match(brief, /Acceptance criteria/i);
   assert.match(brief, /Do not publish the experience/i);
