@@ -134,7 +134,12 @@ function spawnCodex(args, options = {}) {
   if (process.platform === "win32") {
     const quote = value => '"' + String(value).replace(/"/g, '""') + '"';
     const commandLine = [CODEX_EXECUTABLE, ...args].map(quote).join(" ");
-    return spawn(process.env.ComSpec || "cmd.exe", ["/d", "/s", "/c", '"' + commandLine + '"'], spawnOptions);
+    // Pass the composed cmd.exe command line verbatim. Otherwise Node re-quotes
+    // the embedded quotes and cmd.exe receives a command like ""codex" "--version"".
+    return spawn(process.env.ComSpec || "cmd.exe", ["/d", "/s", "/c", '"' + commandLine + '"'], {
+      ...spawnOptions,
+      windowsVerbatimArguments: true
+    });
   }
   return spawn(CODEX_EXECUTABLE, args, spawnOptions);
 }
