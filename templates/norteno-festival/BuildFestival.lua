@@ -30,12 +30,15 @@ local palette = {
 }
 
 local function findRoot(): Model
-  local existing = Workspace:FindFirstChild(ROOT_NAME)
-  if existing and existing:GetAttribute(GENERATED_ATTRIBUTE) == true then
-    existing:Destroy()
+  -- Never replace existing content automatically. A rerun stops safely if our
+  -- generated scene is already present, so it cannot create a duplicate.
+  for _, child in Workspace:GetChildren() do
+    if child:IsA("Model") and child:GetAttribute(GENERATED_ATTRIBUTE) == true then
+      error("Ya existe una escena generada por Norteño Studio AI; revisa o renombra esa escena antes de volver a ejecutar el constructor.")
+    end
   end
 
-  existing = Workspace:FindFirstChild(ROOT_NAME)
+  local existing = Workspace:FindFirstChild(ROOT_NAME)
   local name = ROOT_NAME
   if existing then
     local suffix = 2
@@ -180,11 +183,28 @@ Lighting.FogColor = Color3.fromRGB(29, 25, 31)
 Lighting.FogStart = 260
 Lighting.FogEnd = 760
 
-local atmosphere = Lighting:FindFirstChild("NortenoAtmosphere") :: Atmosphere?
-if not atmosphere then
-  atmosphere = Instance.new("Atmosphere")
-  atmosphere.Name = "NortenoAtmosphere"
-  atmosphere.Parent = Lighting
+local atmosphereCandidate = Lighting:FindFirstChild("NortenoAtmosphere")
+local atmosphere: Atmosphere
+if atmosphereCandidate and atmosphereCandidate:IsA("Atmosphere")
+  and atmosphereCandidate:GetAttribute(GENERATED_ATTRIBUTE) == true then
+  atmosphere = atmosphereCandidate
+else
+  local atmosphereName = atmosphereCandidate and "NortenoAtmosphere_Generated" or "NortenoAtmosphere"
+  local suffix = 2
+  local candidate = Lighting:FindFirstChild(atmosphereName)
+  while candidate and not (candidate:IsA("Atmosphere") and candidate:GetAttribute(GENERATED_ATTRIBUTE) == true) do
+    atmosphereName = "NortenoAtmosphere_Generated_" .. tostring(suffix)
+    suffix += 1
+    candidate = Lighting:FindFirstChild(atmosphereName)
+  end
+  if candidate and candidate:IsA("Atmosphere") then
+    atmosphere = candidate
+  else
+    atmosphere = Instance.new("Atmosphere")
+    atmosphere.Name = atmosphereName
+    atmosphere:SetAttribute(GENERATED_ATTRIBUTE, true)
+    atmosphere.Parent = Lighting
+  end
 end
 atmosphere.Density = 0.22
 atmosphere.Offset = 0.08
@@ -265,6 +285,7 @@ local function ledPanel(parent: Instance, name: string, width: number, height: n
   bg.Parent = gui
   for i = 1, 12 do
     local stripe = Instance.new("Frame")
+    stripe.Name = "LEDStripe"
     stripe.Size = UDim2.new(0.055, 0, 1, 0)
     stripe.Position = UDim2.new((i - 1) / 12, 0, 0, 0)
     stripe.BackgroundColor3 = if i % 3 == 0 then accent else palette.charcoal
@@ -430,6 +451,13 @@ for row = 1, 5 do
       CFrame.new(base + Vector3.new(0, 3.9, 0)), Color3.fromRGB(168, 128, 95), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
     head.CanCollide = false
     head.CanQuery = false
+    for legSide = -1, 1, 2 do
+      local leg = makePart(person, "Leg", Vector3.new(0.4, 1.15, 0.46),
+        CFrame.new(base + Vector3.new(legSide * 0.33, 0.55, 0)),
+        Color3.fromRGB(22, 22, 24), Enum.Material.SmoothPlastic)
+      leg.CanCollide = false
+      leg.CanQuery = false
+    end
     for armSide = -1, 1, 2 do
       local raised = math.random() > 0.72
       local angle = if raised then math.rad(38 * armSide) else math.rad(-6)
