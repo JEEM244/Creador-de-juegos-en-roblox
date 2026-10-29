@@ -10,6 +10,8 @@
 - [x] Biblioteca local para scripts Luau, documentos, imágenes, audio y formatos de modelos admitidos.
 - [x] Descarga de recursos y límite de 8 MB por archivo.
 - [x] Registro de actividad y almacenamiento local ignorado por Git.
+- [x] Exportación de metadatos y tareas en JSON/Markdown.
+- [x] Brief para Codex exportable con tareas y reglas de verificación.
 - [x] Pruebas automáticas de API y persistencia; CI para Node.js 20 y 22.
 - [ ] Pruebas automatizadas de navegador para la interfaz.
 
@@ -24,7 +26,8 @@
 - [ ] Ejecutar una tarea aprobada con el cliente configurado, manteniendo revisión humana.
 - [ ] Añadir exportación/importación de un paquete de proyecto con metadatos.
 - [ ] Añadir búsqueda, etiquetas y vista previa de recursos en la biblioteca.
-- [ ] Añadir exportación de planes y tareas a JSON/Markdown.
+- [x] Añadir exportación de planes y tareas a JSON/Markdown.
+- [ ] Añadir exportación de un paquete completo con archivos binarios y operación de restauración.
 - [ ] Añadir operaciones de recuperación y copia de seguridad desde la interfaz.
 
 ## Fase 3 — Recursos y generación
