@@ -183,31 +183,40 @@ function updateCodexRunView(run){
 }
 async function refreshCodexStatus(){
   const button=$("#checkCodexBtn");
-  if(button)button.disabled=true;
+  const originalButtonText=button?.textContent||"Comprobar Codex";
+  const title=$("#codexStatusTitle"),detail=$("#codexStatusDetail"),tag=$("#codexStatusTag");
+  if(button){button.disabled=true;button.textContent="Comprobando…"}
+  title.textContent="Comprobando Codex CLI…";
+  detail.textContent="Ejecutando codex --version y revisando la configuración MCP. Esto puede tardar unos segundos.";
+  tag.textContent="Comprobando";tag.className="state";
   try{
     const data=await api("/api/codex/status");
-    const title=$("#codexStatusTitle"),detail=$("#codexStatusDetail"),tag=$("#codexStatusTag");
     if(!data.installed){
       title.textContent="Codex CLI no disponible";
       detail.textContent=data.message||"Instala Codex CLI o revisa que esté disponible en PATH.";
       tag.textContent="No encontrado";tag.className="state";
+      toast("Codex no respondió: "+(data.message||"revisa la configuración"));
     }else if(data.mcpServerRegistered){
       title.textContent="Codex "+(data.version||"instalado");
       detail.textContent="Roblox_Studio aparece en la configuración MCP. Eso no garantiza que Studio esté conectado.";
       tag.textContent="MCP configurado";tag.className="state ok";
+      toast("Codex responde. MCP está registrado; falta comprobar la sesión real de Studio.");
     }else{
       title.textContent="Codex "+(data.version||"instalado");
-      detail.textContent="No se detectó Roblox_Studio en codex mcp list. Activa Quick connect en Roblox Studio y prueba otra vez.";
+      detail.textContent=data.message||"No se detectó Roblox_Studio en codex mcp list. Activa Quick connect en Roblox Studio y prueba otra vez.";
       tag.textContent="Falta MCP";tag.className="state";
+      toast("Codex funciona, pero no se detecta Roblox_Studio en MCP.");
     }
     return data;
   }catch(error){
-    $("#codexStatusTitle").textContent="No se pudo comprobar Codex";
-    $("#codexStatusDetail").textContent=error.message;
-    $("#codexStatusTag").textContent="Error";
-    $("#codexStatusTag").className="state";
+    title.textContent="No se pudo comprobar Codex";
+    detail.textContent=error.message;
+    tag.textContent="Error";tag.className="state";
+    toast("Error al comprobar Codex: "+error.message);
     return null;
-  }finally{if(button)button.disabled=false}
+  }finally{
+    if(button){button.disabled=false;button.textContent=originalButtonText}
+  }
 }
 function scheduleCodexPoll(runId,delay=1300){
   clearTimeout(codexPollTimer);
