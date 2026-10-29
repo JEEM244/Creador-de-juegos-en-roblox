@@ -1,6 +1,6 @@
 # Norteño Studio AI — Roblox Game Creator
 
-Estudio local en español para organizar el desarrollo de juegos de Roblox: chat con IA, planificación en tareas, proyectos persistentes, biblioteca local y exportación de scripts Luau.
+Estudio local en español para organizar y ejecutar la construcción de juegos de Roblox: proyectos persistentes, tareas, biblioteca de recursos, puente con Codex CLI y un flujo de construcción de festival norteño mediante Roblox Studio MCP.
 
 ## Requisitos
 - Node.js 20 o superior.
@@ -18,6 +18,7 @@ No requiere dependencias de npm. Para desarrollo puedes usar `npm run dev`; para
 
 ## Funciones disponibles
 - **Chat de creación:** conversación con un modelo configurado mediante `AI_BASE_URL`, `AI_MODEL` y `AI_API_KEY`.
+- **Construir festival en Studio:** botón especializado que carga un brief y lo entrega a Codex CLI para construir en la sesión de Roblox Studio abierta. Incluye un constructor procedural de escenario y plantillas Luau para el control de iluminación y una atracción arcade. Funciona sin `AI_API_KEY`, siempre que Codex/MCP estén conectados.
 - **Ejecución con Codex CLI:** envía una instrucción o tarea guardada al Codex instalado en Windows; consulta instalación y configuración MCP, enseña la salida y permite cancelar. Usa el sandbox `workspace-write` y aprobación `on-request`.
 - **Planificador:** envía una idea al modelo, solicita un plan estructurado y guarda las subtareas en la cola.
 - **Proyectos:** crea, filtra, renombra y elimina proyectos.
@@ -66,8 +67,11 @@ Las rutas son para uso local; la aplicación escucha por defecto solo en `127.0.
 - El código Luau se almacena y descarga como archivo; la aplicación no afirma haberlo ejecutado en Roblox Studio.
 - El diagnóstico confirma que Codex CLI y la entrada MCP están configurados, pero no demuestra que exista una sesión real de Studio conectada. La propia ejecución debe comprobarlo.
 - El puente de Codex usa sandbox `workspace-write`, aprobaciones `on-request`, límite de 10 minutos, una ejecución simultánea y un botón de cancelación. El proceso puede modificar el juego abierto si el MCP está disponible; revisa la ejecución y Studio antes de marcar la tarea como terminada.
-- La app no genera modelos por sí misma y no publica juegos.
+- El constructor procedural crea una escena estilizada con piezas nativas; no genera modelos 3D externos ni música. La construcción automatizada depende de las herramientas de la sesión MCP y no está verificada todavía en la computadora del usuario. La app no publica juegos.
 - Mantén copias de seguridad del proyecto Roblox y revisa cada cambio antes de publicarlo.
+
+## Constructor de Festival Norteño
+Abre Roblox Studio con una copia de tu experiencia, confirma que Codex puede leer la sesión MCP abierta y pulsa **Construir festival en Studio**. La app lee `templates/norteno-festival/BUILD-BRIEF.md` y manda el flujo a Codex. El brief incluye `BuildFestival.lua`, `LightingShow.server.luau` y `RodeoRide.server.luau`; Codex debe ejecutar el constructor en modo de edición, instalar los scripts y comprobar el resultado. No marques como completado nada que Codex no haya verificado realmente. Mira [la guía del paquete](templates/norteno-festival/README.md) para límites y criterios.
 
 ## Guía de uso
 Consulta [docs/USER-GUIDE.md](docs/USER-GUIDE.md) para el flujo recomendado desde una idea hasta tareas y recursos revisables.
