@@ -1,8 +1,8 @@
 {
   "name": "norteno-studio-ai",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "Estudio local para coordinar IA, recursos y herramientas de creación de juegos de Roblox.",
+  "description": "Estudio local de creación Roblox con proyectos, tareas, planificación IA y biblioteca de recursos.",
   "type": "module",
   "scripts": {
     "start": "node server.js",
