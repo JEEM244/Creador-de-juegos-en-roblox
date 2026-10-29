@@ -60,4 +60,4 @@ El MCP de Studio utiliza transporte local `stdio`. Esta aplicación web **todav�
 1. Probar Codex CLI + Roblox Studio MCP en una sesión real.
 2. Convertir ideas en planes estructurados y tareas persistentes.
 3. Mostrar el estado real de las conexiones.
-4. Añadir pruebas automatizadas y un flujo de validación en Studio.
+4. Ampliar las pruebas con navegador y validar el flujo completo en Studio.
