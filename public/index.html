@@ -231,6 +231,8 @@ async function pollCodexRun(runId){
       state.codexPolling=false;
       $("#sendCodexBtn").disabled=false;
       $("#checkCodexBtn").disabled=false;
+      $("#buildFestivalBtn").disabled=false;
+      $("#buildFestivalBtn").textContent="Construir festival en Studio";
       toast(data.run.status==="completed"?"Codex terminó. Revisa el resultado en Studio.":"La ejecución de Codex terminó: "+data.run.status);
       refreshCodexStatus();
     }
@@ -238,6 +240,8 @@ async function pollCodexRun(runId){
     $("#codexRunSummary").textContent="No se pudo actualizar la ejecución: "+error.message;
     state.codexPolling=false;
     $("#sendCodexBtn").disabled=false;
+    $("#buildFestivalBtn").disabled=false;
+    $("#buildFestivalBtn").textContent="Construir festival en Studio";
   }
 }
 async function runWithCodex(promptText,title="",jobId=null){
@@ -356,6 +360,7 @@ $("#buildFestivalBtn").addEventListener("click",async()=>{
     const projectContext=project?"\n\nPROYECTO SELECCIONADO\nNombre: "+project.name+"\nDescripción: "+(project.description||"Festival norteño para Roblox"):"";
     const promptText="OBJETIVO PRINCIPAL: construye y verifica una primera versión jugable del Festival Norteño directamente en la experiencia abierta de Roblox Studio usando el MCP. No te limites a generar instrucciones ni a crear archivos locales.\n\nLee y sigue este brief de producción:\n\n"+brief+projectContext+"\n\nAntes de escribir, confirma que realmente puedes leer y modificar la sesión viva de Studio. Si no puedes, informa el bloqueo y no afirmes que hiciste cambios. Trabaja por fases, haz una pausa de seguridad antes de cualquier acción destructiva y no publiques el juego.";
     await runWithCodex(promptText,"Construir festival norteño en Roblox");
+    if(state.codexPolling)button.textContent="Festival en construcción…";
   }catch(error){
     toast(error.message);
   }finally{
