@@ -430,7 +430,7 @@ for index, x in bandPositions do
     Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
   brim.CanCollide = false
   local crown = makePart(musician, "SombreroCrown", Vector3.new(0.95, 0.6, 0.95),
-    CFrame.new(x, 9.45, -67 + (index % 2) * 2),
+    CFrame.new(x, 9.45, -67 + (index % 2) * 2) * CFrame.Angles(0, 0, math.rad(90)),
     palette.black, Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
   crown.CanCollide = false
   for legSide = -1, 1, 2 do
