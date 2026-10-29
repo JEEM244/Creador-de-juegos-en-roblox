@@ -28,7 +28,7 @@ No requiere dependencias de npm. Para desarrollo puedes usar `npm run dev`; para
 ## IA del chat
 Configuración por defecto en `.env.example`:
 - `AI_BASE_URL=https://api.openai.com/v1`
-- `AI_MODEL=gpt-4.1-mini`
+- `AI_MODEL=gpt-6-luna` (modelo de menor coste para tareas enfocadas; revisa la documentación vigente)
 - `AI_API_KEY=` (se debe completar localmente)
 
 Puedes utilizar otro proveedor que implemente `/chat/completions`, pero algunas funciones como el modo JSON del planificador dependen de la compatibilidad del proveedor. Una suscripción a ChatGPT o Codex no implica que tengas créditos de API; revisa los costes y límites antes de enviar peticiones.
