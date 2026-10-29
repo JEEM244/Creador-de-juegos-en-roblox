@@ -97,6 +97,32 @@ test("proyectos se crean, actualizan y validan", async () => {
     body: JSON.stringify({ name: " " })
   });
   assert.equal(invalid.response.status, 400);
+
+  const dependent = await jsonRequest("/api/jobs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title: "Instalar luces", projectId, dependsOn: [created.data.job.id] })
+  });
+  assert.equal(dependent.response.status, 201);
+  const blocked = await jsonRequest("/api/jobs/" + dependent.data.job.id, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "in_progress" })
+  });
+  assert.equal(blocked.response.status, 409);
+
+  const finishDependency = await jsonRequest("/api/jobs/" + created.data.job.id, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "done" })
+  });
+  assert.equal(finishDependency.response.status, 200);
+  const nowAllowed = await jsonRequest("/api/jobs/" + dependent.data.job.id, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "in_progress" })
+  });
+  assert.equal(nowAllowed.response.status, 200);
 });
 
 test("las tareas se crean y permiten cambiar estado", async () => {
