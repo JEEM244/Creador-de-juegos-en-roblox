@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { after, before, test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -77,6 +77,11 @@ test("GET /api/build-brief entrega el flujo de construcción sin exigir API key"
   assert.equal((await jsonRequest("/api/health")).data.ai.configured, false);
 });
 
+test("Codex exec usa la política on-request antes del subcomando", async () => {
+  const serverSource = await readFile(new URL("../server.js", import.meta.url), "utf8");
+  assert.match(serverSource, /const args = \["--ask-for-approval", "on-request", "exec", "--sandbox", "workspace-write", "--ephemeral", staticPrompt\]/);
+});
+
 test("el puente Codex informa cuando CLI no está instalada y no ejecuta tareas", async () => {
   const status = await jsonRequest("/api/codex/status");
   assert.equal(status.response.status, 200);
@@ -114,6 +119,8 @@ test("GET / sirve la interfaz en español", async () => {
   assert.match(html, /buildFestivalBtn/);
   assert.match(html, /Comprobando Codex CLI/);
   assert.match(html, /Error al comprobar Codex/);
+  assert.match(html, /Festival en construcción/);
+  assert.match(html, /Construir festival en Studio/);
 });
 
 test("proyectos se crean, actualizan y validan", async () => {
