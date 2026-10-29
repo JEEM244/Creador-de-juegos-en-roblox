@@ -436,6 +436,73 @@ const server = http.createServer(async (req, res) => {
       await logEvent({ type: "asset-deleted", assetId: id });
       return send(res, 200, { deleted: true, id });
     }
+    if (req.method === "GET" && url.pathname === "/api/export/json") {
+      const requestedProject = url.searchParams.get("projectId");
+      const projectId = validateProjectId(requestedProject);
+      const projects = projectId ? state.projects.filter(project => project.id === projectId) : state.projects;
+      const jobs = projectId ? state.jobs.filter(job => job.projectId === projectId) : state.jobs;
+      const assets = projectId ? state.assets.filter(asset => asset.projectId === projectId) : state.assets;
+      const payload = {
+        format: "norteno-studio-export",
+        formatVersion: 1,
+        exportedAt: new Date().toISOString(),
+        note: "Los archivos binarios no se incluyen; descarga los recursos desde la biblioteca local.",
+        projects,
+        jobs,
+        assets: assets.map(publicAsset)
+      };
+      const filename = "norteno-studio-" + (projectId ? "proyecto-" + projectId : "todo") + ".json";
+      res.writeHead(200, {
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Disposition": "attachment; filename=\"" + filename + "\"",
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "no-store"
+      });
+      return res.end(JSON.stringify(payload, null, 2) + "\n");
+    }
+    if (req.method === "GET" && url.pathname === "/api/export/markdown") {
+      const requestedProject = url.searchParams.get("projectId");
+      const projectId = validateProjectId(requestedProject);
+      const projects = projectId ? state.projects.filter(project => project.id === projectId) : state.projects;
+      const jobs = projectId ? state.jobs.filter(job => job.projectId === projectId) : state.jobs;
+      const assets = projectId ? state.assets.filter(asset => asset.projectId === projectId) : state.assets;
+      const lines = [
+        "# Norteño Studio AI — Exportación",
+        "",
+        "Exportado: " + new Date().toISOString(),
+        "",
+        "## Proyectos",
+        ""
+      ];
+      if (!projects.length) lines.push("_No hay proyectos guardados._", "");
+      for (const project of projects) {
+        lines.push("### " + project.name, "", project.description || "_Sin descripción._", "");
+      }
+      lines.push("## Tareas", "");
+      if (!jobs.length) lines.push("_No hay tareas para este alcance._", "");
+      for (const job of jobs) {
+        lines.push("### " + job.title, "", "- Estado: " + job.status, "- Herramienta sugerida: " + job.tool);
+        if (job.detail) lines.push("- Detalles: " + job.detail);
+        if (job.acceptanceCriteria) lines.push("- Criterio de aceptación: " + job.acceptanceCriteria);
+        if (job.dependsOn?.length) lines.push("- Depende de tareas ID: " + job.dependsOn.join(", "));
+        lines.push("");
+      }
+      lines.push("## Recursos registrados", "");
+      if (!assets.length) lines.push("_No hay recursos guardados._", "");
+      for (const asset of assets) {
+        lines.push("- **" + asset.name + "** — " + asset.filename + " (" + asset.bytes + " bytes; " + asset.kind + ")");
+        if (asset.description) lines.push("  - Notas: " + asset.description);
+      }
+      lines.push("", "> Esta exportación contiene notas y metadatos, no los archivos binarios. Descarga los recursos por separado desde la biblioteca.");
+      const filename = "norteno-studio-" + (projectId ? "proyecto-" + projectId : "todo") + ".md";
+      res.writeHead(200, {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "Content-Disposition": "attachment; filename=\"" + filename + "\"",
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "no-store"
+      });
+      return res.end(lines.join("\n") + "\n");
+    }
     if (req.method === "POST" && url.pathname === "/api/chat") {
       const input = await bodyJson(req);
       const message = text(input.message, 12000);
