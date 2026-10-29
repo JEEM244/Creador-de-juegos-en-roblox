@@ -81,6 +81,8 @@ test("el puente Codex informa cuando CLI no está instalada y no ejecuta tareas"
   const status = await jsonRequest("/api/codex/status");
   assert.equal(status.response.status, 200);
   assert.equal(status.data.installed, false);
+  assert.match(status.data.message, /Codex CLI|Salida del CLI/i);
+  assert.doesNotMatch(status.data.message, /^Codex CLI no respondió correctamente\.$/i);
 
   const result = await jsonRequest("/api/codex/runs", {
     method: "POST",
