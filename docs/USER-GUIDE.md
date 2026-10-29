@@ -1,7 +1,7 @@
 # Guía de uso — Norteño Studio AI
 
 ## 1. Iniciar
-Usa Node.js 20 o superior. Copia `.env.example` a `.env`; para utilizar chat y planificador configura una clave API compatible. Ejecuta `npm start` y abre `http://127.0.0.1:4173`.
+Usa Node.js 20 o superior. En Windows, ejecuta `start.bat` con doble clic: crea `.env` si falta, inicia el servidor y abre el navegador. Para utilizar chat y planificador, edita `.env`, configura una clave API compatible y reinicia el servidor. También puedes ejecutar `npm start` y abrir `http://127.0.0.1:4173` manualmente.
 
 Sin clave API puedes gestionar proyectos, tareas y archivos manualmente, pero el chat y el planificador no pueden completar peticiones de IA. No pongas claves en el navegador. La API puede generar costes independientes de la suscripción de ChatGPT/Codex.
 
