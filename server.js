@@ -65,6 +65,18 @@ function send(res, status, data) {
   });
   res.end(JSON.stringify(data));
 }
+function hasUntrustedOrigin(req, port = PORT) {
+  const origin = req.headers.origin;
+  if (!origin) return false;
+  try {
+    const parsed = new URL(origin);
+    return parsed.protocol !== "http:"
+      || !["127.0.0.1", "localhost"].includes(parsed.hostname)
+      || parsed.port !== String(port);
+  } catch {
+    return true;
+  }
+}
 function fail(statusCode, message) {
   const error = new Error(message);
   error.statusCode = statusCode;
@@ -421,6 +433,9 @@ async function createAsset(input, projectId = null) {
 const mime = { ".html": "text/html; charset=utf-8" };
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url || "/", "http://" + HOST + ":" + PORT);
+  if (["POST", "PATCH", "DELETE"].includes(req.method) && hasUntrustedOrigin(req)) {
+    return send(res, 403, { error: "Origen no permitido para esta acción local. Abre Norteño Studio AI desde localhost." });
+  }
   try {
     if (req.method === "GET" && url.pathname === "/api/health") {
       return send(res, 200, {
