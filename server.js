@@ -814,6 +814,16 @@ const server = http.createServer(async (req, res) => {
         return send(res, 202, { run: publicCodexRun(run) });
       }
     }
+    if (req.method === "GET" && url.pathname === "/api/build-brief") {
+      const briefPath = path.join(__dirname, "templates", "norteno-festival", "BUILD-BRIEF.md");
+      const brief = await readFile(briefPath, "utf8");
+      res.writeHead(200, {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff"
+      });
+      return res.end(brief);
+    }
     if (req.method === "POST" && url.pathname === "/api/chat") {
       const input = await bodyJson(req);
       const message = text(input.message, 12000);
