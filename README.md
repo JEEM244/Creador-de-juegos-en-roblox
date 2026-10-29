@@ -7,12 +7,12 @@ Estudio local en español para organizar el desarrollo de juegos de Roblox: chat
 - Una clave API de un proveedor compatible con Chat Completions para utilizar el chat y el planificador con IA.
 - Opcional: Roblox Studio y Codex CLI para aplicar y comprobar cambios en la experiencia.
 
-## Ejecutar
-1. Clona el repositorio.
-2. Copia `.env.example` como `.env`.
-3. Añade tu clave privada en `AI_API_KEY` si quieres activar el chat/planificador con IA.
-4. Ejecuta `npm start`.
-5. Abre `http://127.0.0.1:4173`.
+## Ejecutar en Windows
+1. Clona o descarga el repositorio.
+2. Ejecuta `start.bat` con doble clic. El lanzador crea `.env` desde `.env.example` si todavía no existe, inicia el servidor y abre el navegador.
+3. Para usar el chat y el planificador, edita `.env` y añade tu clave en `AI_API_KEY`. Reinicia el servidor después de editarlo.
+
+También puedes iniciarlo desde una terminal: copia `.env.example` como `.env`, configura la clave si la necesitas, ejecuta `npm start` y abre `http://127.0.0.1:4173`.
 
 No requiere dependencias de npm. Para desarrollo puedes usar `npm run dev`; para pruebas, `npm test`. **No subas el archivo `.env` a GitHub.**
 
